@@ -2,2818 +2,1488 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aditya's Physics Lab</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Aditya's Physics Lab // Ultimate</title>
 
 <style>
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+ --bg:#02050b;
+ --panel:#07101d;
+ --panel2:#0b1728;
+ --line:#1c3552;
+ --cyan:#4de8ff;
+ --purple:#916cff;
+ --green:#55f0a5;
+ --red:#ff5577;
+ --yellow:#ffd34d;
+ --text:#edf7ff;
+ --muted:#72849f;
 }
-
 body{
-    font-family:Arial,Helvetica,sans-serif;
-    background:#070b14;
-    color:white;
-    overflow-x:hidden;
+ background:var(--bg);color:var(--text);
+ font-family:Inter,Arial,sans-serif;
+ overflow:hidden;
 }
+button,input,select{font:inherit}
+button{cursor:pointer}
+canvas{display:block}
 
-button{
-    cursor:pointer;
-    font-family:inherit;
+/* ================= BOOT ================= */
+
+#boot{
+ position:fixed;inset:0;z-index:999;
+ background:
+ radial-gradient(circle at 50% 45%,#122b4d 0%,#07101f 30%,#010308 75%);
+ display:flex;align-items:center;justify-content:center;
+ overflow:hidden;
+ transition:1s;
 }
-
-header{
-    position:sticky;
-    top:0;
-    z-index:50;
-    background:rgba(7,11,20,.92);
-    backdrop-filter:blur(15px);
-    border-bottom:1px solid #ffffff15;
+#bootCanvas{position:absolute;inset:0;width:100%;height:100%}
+.bootUI{
+ position:relative;z-index:2;width:min(850px,88%);
+ text-align:center;
 }
-
-.nav{
-    max-width:1400px;
-    margin:auto;
-    padding:14px 20px;
-    display:flex;
-    align-items:center;
-    gap:14px;
+.bootSmall{
+ color:#9db4cc;font-size:14px;letter-spacing:10px;
+ opacity:0;animation:bootIn 1.2s forwards;
 }
-
-.logo{
-    width:45px;
-    height:45px;
-    border-radius:14px;
-    display:grid;
-    place-items:center;
-    background:linear-gradient(135deg,#55e7ff,#9c6cff);
-    font-size:23px;
-    box-shadow:0 0 30px #55e7ff55;
+.bootTitle{
+ margin:25px 0 12px;
+ font-size:clamp(45px,9vw,100px);
+ line-height:.95;font-weight:900;
+ letter-spacing:3px;
+ opacity:0;
+ animation:bootTitle 1.5s 1.5s forwards;
+ text-shadow:0 0 20px #4de8ff,0 0 60px #4de8ff44;
 }
+.bootSub{
+ color:var(--cyan);letter-spacing:7px;
+ opacity:0;animation:bootIn 1s 3.3s forwards;
+}
+.bootStatus{
+ margin-top:50px;text-align:left;
+ opacity:0;animation:bootIn 1s 4s forwards;
+}
+.bootLine{
+ color:#6f849e;font-family:monospace;font-size:12px;
+ margin:5px 0;
+}
+.bootLine span{color:var(--green)}
+.bootBar{
+ margin-top:15px;height:5px;background:#102039;
+ border-radius:10px;overflow:hidden
+}
+.bootProgress{
+ width:0;height:100%;
+ background:linear-gradient(90deg,var(--cyan),var(--purple));
+ box-shadow:0 0 20px var(--cyan);
+ animation:bootProgress 5s 4.5s linear forwards
+}
+#bootPercent{
+ text-align:right;color:var(--cyan);
+ font:12px monospace;margin-top:7px
+}
+@keyframes bootIn{to{opacity:1}}
+@keyframes bootTitle{0%{opacity:0;transform:scale(.75);filter:blur(10px)}100%{opacity:1;transform:scale(1);filter:blur(0)}}
+@keyframes bootProgress{to{width:100%}}
 
+/* ================= APP ================= */
+
+#app{display:none;height:100vh}
+
+.top{
+ height:70px;border-bottom:1px solid var(--line);
+ background:#040a13eF;
+ display:flex;align-items:center;justify-content:space-between;
+ padding:0 22px;position:relative;z-index:10
+}
 .brand{
-    font-weight:bold;
+ font-weight:900;letter-spacing:2px;font-size:19px
+}
+.brand b{color:var(--cyan)}
+.system{
+ display:flex;gap:18px;align-items:center;
+ color:#71849e;font:11px monospace
+}
+.live{color:var(--green)}
+
+.layout{height:calc(100vh - 70px);display:flex}
+
+.sidebar{
+ width:245px;flex-shrink:0;
+ background:#040914;border-right:1px solid var(--line);
+ padding:18px 12px;overflow:auto
+}
+.sideTitle{
+ color:#566b87;font-size:10px;
+ letter-spacing:3px;margin:7px 10px 13px
+}
+.nav{
+ display:flex;align-items:center;gap:11px;
+ width:100%;padding:12px 13px;margin:4px 0;
+ background:transparent;color:#94a7c1;
+ border:1px solid transparent;border-radius:10px;
+ text-align:left;transition:.2s
+}
+.nav:hover,.nav.active{
+ color:#fff;background:#0b182b;border-color:#27405f
+}
+.nav .ico{width:23px;text-align:center;font-size:18px}
+
+.levelBox{
+ margin:20px 5px 8px;padding:13px;
+ background:#091426;border:1px solid #1c3552;border-radius:12px
+}
+.levelTop{display:flex;justify-content:space-between;font-size:11px}
+.levelTop b{color:var(--cyan)}
+.xpbar{height:5px;background:#15253c;margin-top:9px;border-radius:5px;overflow:hidden}
+.xpfill{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--purple));transition:.5s}
+
+.main{
+ flex:1;overflow:auto;padding:28px;
+ background:
+ radial-gradient(circle at 85% 5%,#10244055,transparent 25%),
+ radial-gradient(circle at 10% 95%,#13204144,transparent 30%)
 }
 
-.brand small{
-    display:block;
-    color:#8192ad;
-    font-size:11px;
-}
-
-.navlinks{
-    margin-left:auto;
-    display:flex;
-    gap:8px;
-}
-
-.navlinks button{
-    padding:9px 13px;
-    border-radius:11px;
-    border:1px solid #ffffff12;
-    background:#ffffff08;
-    color:white;
-}
-
-.navlinks button:hover{
-    border-color:#55e7ff66;
-    background:#55e7ff12;
-}
-
-.wallet{
-    color:#ffd45a!important;
-    border-color:#ffd45a44!important;
-}
-
-main{
-    max-width:1400px;
-    margin:auto;
-    padding:28px 20px 70px;
-}
+/* HOME */
 
 .hero{
-    display:grid;
-    grid-template-columns:1.2fr .8fr;
-    gap:20px;
+ border:1px solid var(--line);
+ background:linear-gradient(135deg,#0a1729,#050b15);
+ border-radius:18px;padding:28px;
+ position:relative;overflow:hidden
+}
+.hero:after{
+ content:"PHYSICS // CORE";
+ position:absolute;right:25px;bottom:20px;
+ color:#ffffff08;font-size:50px;font-weight:900
+}
+.hero h1{font-size:42px}
+.hero p{color:var(--muted);margin-top:8px}
+.heroStats{
+ display:flex;gap:25px;margin-top:24px;flex-wrap:wrap
+}
+.hStat{
+ border-left:2px solid var(--cyan);padding-left:10px
+}
+.hStat small{display:block;color:var(--muted);font-size:9px;letter-spacing:2px}
+.hStat b{font-size:20px}
+
+.sectionTitle{
+ margin:27px 0 14px;color:#7890ad;
+ font-size:11px;letter-spacing:3px
+}
+.labGrid{
+ display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px
+}
+.labCard{
+ min-height:180px;padding:21px;
+ background:linear-gradient(145deg,#0a1728,#050b14);
+ border:1px solid #1b304b;border-radius:15px;
+ position:relative;overflow:hidden;transition:.25s
+}
+.labCard:hover{
+ transform:translateY(-5px);
+ border-color:var(--cyan);
+ box-shadow:0 15px 50px #0009
+}
+.labCard.locked{filter:grayscale(.8);opacity:.55}
+.cardIcon{font-size:34px}
+.labCard h2{font-size:18px;margin-top:14px}
+.labCard p{font-size:12px;color:#71839d;line-height:1.5;margin-top:7px}
+.cardTag{
+ position:absolute;right:12px;top:12px;
+ color:var(--cyan);font:9px monospace
+}
+.cardBottom{
+ position:absolute;bottom:14px;left:20px;right:20px;
+ color:#546a85;font-size:9px;letter-spacing:1px
 }
 
-.heroCard,
-.panel,
-.card{
-    background:linear-gradient(145deg,#111b2e,#09101e);
-    border:1px solid #ffffff10;
-    border-radius:22px;
-    box-shadow:0 15px 60px #0006;
+/* EXPERIMENT */
+
+.experiment{display:none}
+.expHeader{
+ display:flex;justify-content:space-between;align-items:center;
+ margin-bottom:18px
 }
-
-.heroCard{
-    padding:42px;
-    min-height:430px;
+.expHeader h1{font-size:30px}
+.expHeader p{color:var(--muted);font-size:13px;margin-top:5px}
+.back{
+ padding:9px 14px;border-radius:8px;
+ border:1px solid #29415f;background:#0a1424;color:#9eb0c8
 }
-
-.eyebrow{
-    color:#55e7ff;
-    font-weight:bold;
-    letter-spacing:2px;
-    font-size:12px;
+.workspace{
+ display:grid;grid-template-columns:minmax(0,1fr) 285px;gap:16px
 }
-
-h1{
-    font-size:clamp(45px,7vw,85px);
-    line-height:.92;
-    margin:18px 0;
-    background:linear-gradient(90deg,#fff,#55e7ff,#a879ff);
-    -webkit-background-clip:text;
-    color:transparent;
+.stage{
+ height:calc(100vh - 185px);min-height:420px;
+ background:#01050b;border:1px solid #1d3552;
+ border-radius:17px;position:relative;overflow:hidden
 }
-
-.hero p{
-    color:#aebed3;
-    max-width:700px;
-    line-height:1.7;
-}
-
-.cta{
-    display:flex;
-    gap:10px;
-    margin-top:25px;
-}
-
-.primary,
-.secondary{
-    border-radius:13px;
-    padding:12px 17px;
-    font-weight:bold;
-}
-
-.primary{
-    background:linear-gradient(135deg,#55e7ff,#9b68ff);
-    border:0;
-    color:#07101a;
-}
-
-.secondary{
-    background:#ffffff08;
-    border:1px solid #ffffff15;
-    color:white;
-}
-
-.stats{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:10px;
-    margin-top:25px;
-}
-
-.stat{
-    padding:15px;
-    background:#ffffff06;
-    border:1px solid #ffffff0b;
-    border-radius:15px;
-}
-
-.stat b{
-    font-size:23px;
-}
-
-.stat span{
-    display:block;
-    color:#788ba6;
-    font-size:12px;
-}
-
-.heroVisual{
-    position:relative;
-    min-height:430px;
-    display:grid;
-    place-items:center;
-    overflow:hidden;
-    background:radial-gradient(circle,#172b50,#080e18 65%);
-    border-radius:22px;
-    border:1px solid #ffffff10;
-}
-
-/* ================= CHARACTER VIEWER ================= */
-
-.characterViewer{
-    position:absolute;
-    top:15px;
-    right:15px;
-    width:220px;
-    padding:13px;
-    border-radius:17px;
-    background:#050a13dd;
-    border:1px solid #55e7ff35;
-    z-index:10;
-}
-
-.viewerTitle{
-    font-size:10px;
-    color:#7890aa;
-    letter-spacing:1px;
-    font-weight:bold;
-}
-
-.viewerName{
-    margin-top:3px;
-    font-size:15px;
-    font-weight:bold;
-}
-
-.avatarStage{
-    height:205px;
-    display:grid;
-    place-items:center;
-    position:relative;
-}
-
-/* actual character */
-
-.character{
-    width:105px;
-    height:170px;
-    position:relative;
-    animation:floatCharacter 2.8s infinite ease-in-out;
-}
-
-.head{
-    position:absolute;
-    width:46px;
-    height:46px;
-    left:29px;
-    top:5px;
-    background:#ffd1aa;
-    border-radius:45%;
-    border:2px solid #0006;
-    z-index:4;
-}
-
-.hair{
-    position:absolute;
-    width:53px;
-    height:24px;
-    left:26px;
-    top:0;
-    background:#202938;
-    border-radius:50% 50% 20% 20%;
-    z-index:5;
-}
-
-.eye{
-    position:absolute;
-    width:6px;
-    height:6px;
-    background:#111;
-    border-radius:50%;
-    top:25px;
-    z-index:6;
-}
-
-.eye.one{left:42px}
-.eye.two{left:58px}
-
-.body{
-    position:absolute;
-    width:60px;
-    height:65px;
-    left:22px;
-    top:48px;
-    border-radius:17px 17px 10px 10px;
-    border:2px solid #0006;
-    z-index:3;
-}
-
-.arm{
-    position:absolute;
-    width:17px;
-    height:57px;
-    top:52px;
-    background:#ffd1aa;
-    border-radius:12px;
-    border:2px solid #0006;
-}
-
-.arm.left{
-    left:7px;
-    transform:rotate(12deg);
-}
-
-.arm.right{
-    right:7px;
-    transform:rotate(-12deg);
-}
-
-.leg{
-    position:absolute;
-    width:20px;
-    height:48px;
-    top:108px;
-    background:#26344e;
-    border-radius:8px;
-    z-index:2;
-}
-
-.leg.left{left:27px}
-.leg.right{right:27px}
-
-.shoe{
-    position:absolute;
-    width:28px;
-    height:12px;
-    top:148px;
-    background:#111827;
-    border-radius:8px;
-}
-
-.shoe.left{left:18px}
-.shoe.right{right:18px}
-
-.accessory{
-    position:absolute;
-    z-index:20;
-    font-size:25px;
-}
-
-.viewerControls{
-    display:flex;
-    gap:7px;
-}
-
-.viewerControls button{
-    flex:1;
-    border:1px solid #ffffff15;
-    background:#ffffff08;
-    color:white;
-    padding:8px;
-    border-radius:9px;
-}
-
-@keyframes floatCharacter{
-    50%{
-        transform:translateY(-7px);
-    }
-}
-
-.orbit{
-    width:230px;
-    height:230px;
-    border:1px solid #55e7ff55;
-    border-radius:50%;
-    animation:spin 12s linear infinite;
-}
-
-.atom{
-    position:absolute;
-    font-size:45px;
-    text-shadow:0 0 30px #55e7ff;
-}
-
-@keyframes spin{
-    to{transform:rotate(360deg)}
-}
-
-/* ================= SECTIONS ================= */
-
-.section{
-    margin-top:30px;
-}
-
-.sectionHead{
-    display:flex;
-    justify-content:space-between;
-    margin-bottom:15px;
-}
-
-.sectionHead h2{
-    font-size:29px;
-}
-
-.sectionHead p{
-    color:#8295ad;
-    margin-top:4px;
-}
-
-.grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:14px;
-}
-
-.card{
-    padding:20px;
-    transition:.2s;
-}
-
-.card:hover{
-    transform:translateY(-3px);
-    border-color:#55e7ff44;
-}
-
-.icon{
-    font-size:35px;
-}
-
-.card h3{
-    margin:10px 0;
-}
-
-.card p{
-    color:#879ab3;
-    line-height:1.5;
-    font-size:14px;
-}
-
-.card button{
-    width:100%;
-    margin-top:12px;
-    padding:10px;
-    border-radius:11px;
-    border:1px solid #ffffff14;
-    background:#ffffff08;
-    color:white;
-    font-weight:bold;
-}
-
-.characterGrid{
-    grid-template-columns:repeat(4,1fr);
-}
-
-.shop{
-    grid-template-columns:repeat(4,1fr);
-}
-
-.avatar{
-    height:130px;
-    display:grid;
-    place-items:center;
-    font-size:70px;
-    background:#0b1628;
-    border-radius:15px;
-}
-
-.locked{
-    opacity:.65;
-}
-
-.price{
-    color:#ffd45a;
-    font-weight:bold;
-}
-
-.owned{
-    color:#56e39f;
-    font-weight:bold;
-}
-
 .panel{
-    padding:25px;
+ background:#081321;border:1px solid #1d3552;
+ border-radius:17px;padding:18px
 }
-
-.codeBox{
-    display:flex;
-    gap:10px;
+.panel h3{font-size:14px;margin-bottom:17px}
+.control{margin:17px 0}
+.control label{
+ display:flex;justify-content:space-between;
+ font-size:11px;color:#91a4bf;margin-bottom:8px
 }
-
-.codeBox input{
-    flex:1;
-    padding:13px;
-    border-radius:11px;
-    background:#ffffff08;
-    border:1px solid #ffffff15;
-    color:white;
-    outline:none;
+.control label b{color:var(--cyan)}
+input[type=range]{width:100%;accent-color:var(--cyan)}
+select{
+ width:100%;padding:10px;
+ background:#0d192b;color:#fff;
+ border:1px solid #29415f;border-radius:8px
 }
-
-.codeBox button{
-    padding:0 20px;
-    border-radius:11px;
-    border:0;
-    background:#ffd45a;
-    font-weight:bold;
+.btn{
+ width:100%;padding:11px;margin-top:7px;
+ border:0;border-radius:9px;
+ color:white;font-weight:bold;
+ background:linear-gradient(90deg,#18c9ef,#7456ff);
+ box-shadow:0 7px 20px #0005
 }
-
-.progress{
-    height:8px;
-    background:#ffffff0b;
-    border-radius:10px;
-    overflow:hidden;
-    margin-top:8px;
+.btn.alt{background:#101d31;border:1px solid #263e5b}
+.telemetry{
+ border-top:1px solid #1b3049;margin-top:17px;padding-top:11px
 }
-
-.progress i{
-    display:block;
-    height:100%;
-    background:linear-gradient(90deg,#55e7ff,#9b68ff);
+.stat{
+ display:flex;justify-content:space-between;
+ color:#687d99;font-size:11px;padding:6px 0
 }
-
-.toast{
-    position:fixed;
-    right:20px;
-    bottom:20px;
-    background:#111c30;
-    border:1px solid #55e7ff55;
-    padding:15px;
-    border-radius:13px;
-    z-index:100;
-    transform:translateY(150px);
-    transition:.3s;
+.stat b{color:#e9f7ff}
+.explain{
+ margin-top:14px;padding:11px;
+ border:1px solid #1d3552;border-radius:10px;
+ color:#7387a2;font-size:11px;line-height:1.55
 }
-
-.toast.show{
-    transform:none;
+.mission{
+ margin-top:10px;padding:11px;
+ border:1px solid #29405d;
+ border-radius:10px;background:#0a1628;
+ font-size:11px;color:#9cafc8
 }
+.mission b{color:var(--yellow)}
 
-/* ================= MODAL ================= */
+/* circuit */
 
-.modal{
-    position:fixed;
-    inset:0;
-    display:none;
-    place-items:center;
-    background:#000b;
-    z-index:80;
-    padding:20px;
+.circuit{
+ position:absolute;inset:0
 }
-
-.modal.show{
-    display:grid;
+.cWire{
+ position:absolute;height:4px;background:#23344b;
+ transition:.3s
 }
-
-.modalBox{
-    width:100%;
-    max-width:760px;
-    max-height:88vh;
-    overflow:auto;
-    background:#0c1424;
-    border:1px solid #ffffff15;
-    border-radius:22px;
-    padding:24px;
+.cWire.on{background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+.wA{left:15%;right:15%;top:30%}
+.wB{left:15%;right:15%;top:70%}
+.wC{left:15%;top:30%;height:40%;width:4px}
+.wD{right:15%;top:30%;height:40%;width:4px}
+.component{
+ position:absolute;background:#0c1b2f;
+ border:1px solid #385170;border-radius:12px;
+ padding:17px;text-align:center
 }
-
-.modalTop{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:15px;
+.battery{left:10%;top:42%}
+.bulb{right:9%;top:41%;font-size:33px}
+.sw{left:47%;top:55%;cursor:pointer}
+.electron{
+ position:absolute;width:7px;height:7px;
+ background:var(--cyan);border-radius:50%;
+ box-shadow:0 0 12px var(--cyan);
+ animation:electron 2s linear infinite;
+ opacity:0
 }
+@keyframes electron{from{left:15%;top:30%}25%{left:85%;top:30%}50%{left:85%;top:70%}75%{left:15%;top:70%}to{left:15%;top:30%}}
 
-.close{
-    border:0;
-    background:#ffffff10;
-    color:white;
-    padding:8px 12px;
-    border-radius:9px;
+/* black hole */
+
+.hole{
+ position:absolute;left:50%;top:50%;
+ width:100px;height:100px;transform:translate(-50%,-50%);
+ border-radius:50%;background:#000;
+ box-shadow:0 0 25px #7e4dff,0 0 80px #743dff55
 }
-
-.experimentStage{
-    height:330px;
-    position:relative;
-    overflow:hidden;
-    background:#050a12;
-    border:1px solid #ffffff0d;
-    border-radius:15px;
-    margin:15px 0;
+.ring{
+ position:absolute;left:50%;top:50%;
+ border:2px solid #a36cff55;border-radius:50%;
+ transform:translate(-50%,-50%) rotateX(65deg)
 }
+.r1{width:260px;height:100px}.r2{width:420px;height:150px}
 
-.ball{
-    position:absolute;
-    width:28px;
-    height:28px;
-    background:#ffd45a;
-    border-radius:50%;
-    box-shadow:0 0 25px #ffd45a;
+/* toast */
+
+#toast{
+ position:fixed;right:25px;bottom:25px;z-index:500;
+ padding:14px 18px;background:#0b192b;
+ border:1px solid var(--cyan);border-radius:12px;
+ box-shadow:0 15px 45px #000;
+ transform:translateX(150%);transition:.5s;
+ font-size:12px
 }
+#toast.show{transform:translateX(0)}
+#toast b{color:var(--cyan)}
 
-.track{
-    position:absolute;
-    left:30px;
-    right:30px;
-    bottom:55px;
-    height:6px;
-    background:#26354d;
-}
+/* mobile */
 
-canvas{
-    max-width:100%;
-}
-
-.done{
-    opacity:.5;
-    cursor:not-allowed!important;
-}
-
-footer{
-    text-align:center;
-    color:#60718a;
-    padding:40px;
-    border-top:1px solid #ffffff0a;
-}
-
-/* MOBILE */
-
-@media(max-width:950px){
-
-    .hero{
-        grid-template-columns:1fr;
-    }
-
-    .grid,
-    .characterGrid,
-    .shop{
-        grid-template-columns:repeat(2,1fr);
-    }
-}
-
-@media(max-width:600px){
-
-    .navlinks{
-        display:none;
-    }
-
-    .heroCard{
-        padding:25px;
-    }
-
-    .grid,
-    .characterGrid,
-    .shop{
-        grid-template-columns:1fr;
-    }
-
-    .stats{
-        grid-template-columns:1fr;
-    }
-
-    .codeBox{
-        flex-direction:column;
-    }
-
-    .codeBox button{
-        padding:12px;
-    }
-
-    .characterViewer{
-        width:185px;
-        transform:scale(.85);
-        transform-origin:top right;
-    }
+@media(max-width:850px){
+ .sidebar{width:65px}.sideTitle,.levelBox{display:none}
+ .nav{font-size:0;justify-content:center;padding:13px 4px}
+ .nav .ico{font-size:19px}
+ .main{padding:17px}
+ .workspace{grid-template-columns:1fr}
+ .panel{max-height:260px;overflow:auto}
+ .stage{height:55vh}
+ .system span:not(.live){display:none}
 }
 </style>
 </head>
 
 <body>
 
-<header>
+<!-- =========================================================
+     CINEMATIC BOOT
+========================================================= -->
+<section id="boot">
+<canvas id="bootCanvas"></canvas>
 
-<div class="nav">
+<div class="bootUI">
+ <div class="bootSmall">WELCOME TO</div>
 
-<div class="logo">⚛</div>
+ <div class="bootTitle">
+   ADITYA'S<br>PHYSICS LAB
+ </div>
 
-<div class="brand">
-ADITYA'S PHYSICS LAB
-<small>Interactive Physics Universe</small>
+ <div class="bootSub">EXPERIMENTAL PHYSICS</div>
+
+ <div class="bootStatus">
+  <div class="bootLine">[01] PHYSICS CORE ............ <span>ONLINE</span></div>
+  <div class="bootLine">[02] EXPERIMENT DATABASE ..... <span>LOADED</span></div>
+  <div class="bootLine">[03] PARTICLE ENGINE ........ <span>READY</span></div>
+  <div class="bootLine">[04] SIMULATION ENGINE ...... <span>READY</span></div>
+  <div class="bootLine">[05] LOCAL SAVE SYSTEM ...... <span>ACTIVE</span></div>
+
+  <div class="bootBar"><div class="bootProgress"></div></div>
+  <div id="bootPercent">0%</div>
+ </div>
 </div>
+</section>
 
-<div class="navlinks">
-<button onclick="go('experiments')">Experiments</button>
-<button onclick="go('characters')">Characters</button>
-<button onclick="go('shop')">Shop</button>
-<button onclick="go('codes')">Codes</button>
+<div id="toast">🏆 <b>ACHIEVEMENT</b><br><span id="toastText"></span></div>
 
-<button class="wallet">
-💲 <span id="coins">0</span>
-</button>
+<!-- =========================================================
+     APPLICATION
+========================================================= -->
+<div id="app">
 
-</div>
-
-</div>
-
+<header class="top">
+ <div class="brand">🧪 <b>ADITYA'S</b> PHYSICS LAB</div>
+ <div class="system">
+  <span>CORE v3.0</span>
+  <span>LOCAL SAVE: <span class="live">● ACTIVE</span></span>
+ </div>
 </header>
 
-<main>
+<div class="layout">
 
-<section class="hero">
+<aside class="sidebar">
+ <div class="sideTitle">LAB SYSTEM</div>
 
-<div class="heroCard">
+ <button class="nav active" onclick="showHome()"><span class="ico">🏠</span>HOME</button>
+ <button class="nav" onclick="openExp('gravity')"><span class="ico">🌎</span>GRAVITY</button>
+ <button class="nav" onclick="openExp('projectile')"><span class="ico">🚀</span>PROJECTILE</button>
+ <button class="nav" onclick="openExp('newton')"><span class="ico">⚙️</span>NEWTON</button>
+ <button class="nav" onclick="openExp('collision')"><span class="ico">💥</span>COLLISION</button>
+ <button class="nav" onclick="openExp('electricity')"><span class="ico">⚡</span>ELECTRICITY</button>
+ <button class="nav" onclick="openExp('magnet')"><span class="ico">🧲</span>MAGNETISM</button>
+ <button class="nav" onclick="openExp('waves')"><span class="ico">〰️</span>WAVES</button>
+ <button class="nav" onclick="openExp('orbit')"><span class="ico">🪐</span>ORBIT</button>
+ <button class="nav" onclick="openExp('heat')"><span class="ico">🔥</span>HEAT</button>
+ <button class="nav" onclick="openExp('blackhole')"><span class="ico">🕳️</span>BLACK HOLE</button>
 
-<div class="eyebrow">
-⚡ WELCOME TO THE LAB
-</div>
+ <div class="levelBox">
+  <div class="levelTop">
+   <span>LAB LEVEL</span><b id="level">1</b>
+  </div>
+  <div class="xpbar"><div class="xpfill" id="xpfill"></div></div>
+  <div style="font:9px monospace;color:#526984;margin-top:6px" id="xptext">0 / 100 XP</div>
+ </div>
+</aside>
 
-<h1>
-ADITYA'S<br>
-PHYSICS LAB
-</h1>
+<main class="main">
 
-<p>
-Explore forces, motion, gravity, electricity, waves, magnetism,
-space and quantum physics through interactive experiments.
-Unlock characters, collect skins and build your own laboratory profile.
-</p>
+<!-- ================= HOME ================= -->
 
-<div class="cta">
+<section id="home">
+ <div class="hero">
+  <h1>PHYSICS // CONTROL CENTER</h1>
+  <p>Run experiments. Discover laws. Complete missions. Build your laboratory.</p>
 
-<button class="primary"
-onclick="go('experiments')">
-🚀 Enter the Lab
-</button>
+  <div class="heroStats">
+   <div class="hStat"><small>LAB LEVEL</small><b id="homeLevel">1</b></div>
+   <div class="hStat"><small>EXPERIMENTS</small><b>11</b></div>
+   <div class="hStat"><small>XP</small><b id="homeXP">0</b></div>
+   <div class="hStat"><small>ACHIEVEMENTS</small><b id="achCount">0</b></div>
+  </div>
+ </div>
 
-<button class="secondary"
-onclick="openExperiment('quantum')">
-🌀 Mystery Experiment
-</button>
+ <div class="sectionTitle">AVAILABLE EXPERIMENTS</div>
 
-</div>
+ <div class="labGrid">
 
-<div class="stats">
+  <div class="labCard" onclick="openExp('gravity')">
+   <div class="cardIcon">🌎</div><h2>Gravity Chamber</h2>
+   <p>Change planets and drop objects. Measure their acceleration and impact.</p>
+   <div class="cardTag">01 // GRAVITY</div>
+   <div class="cardBottom">DROP • MEASURE • DISCOVER</div>
+  </div>
 
-<div class="stat">
-<b id="expCount">0</b>
-<span>Experiments completed</span>
-</div>
+  <div class="labCard" onclick="openExp('projectile')">
+   <div class="cardIcon">🚀</div><h2>Projectile Cannon</h2>
+   <p>Actually aim a cannon and hit a target using projectile motion.</p>
+   <div class="cardTag">02 // MOTION</div>
+   <div class="cardBottom">AIM • FIRE • HIT</div>
+  </div>
 
-<div class="stat">
-<b id="charCount">1</b>
-<span>Characters unlocked</span>
-</div>
+  <div class="labCard" onclick="openExp('newton')">
+   <div class="cardIcon">⚙️</div><h2>Newton Workshop</h2>
+   <p>Push a block and observe how force, mass and friction affect acceleration.</p>
+   <div class="cardTag">03 // FORCES</div>
+   <div class="cardBottom">F = MA</div>
+  </div>
 
-<div class="stat">
-<b id="skinCount">1</b>
-<span>Skins owned</span>
-</div>
+  <div class="labCard" onclick="openExp('collision')">
+   <div class="cardIcon">💥</div><h2>Collision Arena</h2>
+   <p>Control two objects and investigate momentum during collisions.</p>
+   <div class="cardTag">04 // MOMENTUM</div>
+   <div class="cardBottom">SMASH • OBSERVE • CALCULATE</div>
+  </div>
 
-</div>
+  <div class="labCard" onclick="openExp('electricity')">
+   <div class="cardIcon">⚡</div><h2>Circuit Laboratory</h2>
+   <p>Build a working circuit and control voltage, resistance and current.</p>
+   <div class="cardTag">05 // ELECTRIC</div>
+   <div class="cardBottom">CONNECT • SWITCH • LIGHT</div>
+  </div>
 
-</div>
+  <div class="labCard" onclick="openExp('magnet')">
+   <div class="cardIcon">🧲</div><h2>Magnetic Field</h2>
+   <p>Move your mouse around the magnet and reveal its invisible field.</p>
+   <div class="cardTag">06 // FIELDS</div>
+   <div class="cardBottom">SCAN THE FIELD</div>
+  </div>
 
+  <div class="labCard" onclick="openExp('waves')">
+   <div class="cardIcon">〰️</div><h2>Wave Generator</h2>
+   <p>Turn frequency and amplitude into a living mathematical waveform.</p>
+   <div class="cardTag">07 // WAVES</div>
+   <div class="cardBottom">OSCILLATE • PULSE • RESONATE</div>
+  </div>
 
-<div class="heroVisual">
+  <div class="labCard" onclick="openExp('orbit')">
+   <div class="cardIcon">🪐</div><h2>Orbital Mission</h2>
+   <p>Launch a satellite and find the delicate balance of orbital motion.</p>
+   <div class="cardTag">08 // SPACE</div>
+   <div class="cardBottom">LAUNCH • ORBIT • ESCAPE</div>
+  </div>
 
-<!-- ACTUAL CHARACTER VIEWER -->
+  <div class="labCard" onclick="openExp('heat')">
+   <div class="cardIcon">🔥</div><h2>Thermal Chamber</h2>
+   <p>Heat and cool hundreds of particles and observe kinetic energy.</p>
+   <div class="cardTag">09 // THERMAL</div>
+   <div class="cardBottom">HEAT • CHAOS • COOL</div>
+  </div>
 
-<div class="characterViewer">
+  <div class="labCard" onclick="openExp('blackhole')">
+   <div class="cardIcon">🕳️</div><h2>Black Hole Lab</h2>
+   <p>Send objects near an extreme gravitational field and test the event horizon.</p>
+   <div class="cardTag">10 // EXTREME</div>
+   <div class="cardBottom">DO NOT GET TOO CLOSE</div>
+  </div>
 
-<div class="viewerTitle">
-CHARACTER VIEWER
-</div>
+  <div class="labCard" onclick="openExp('waves')">
+   <div class="cardIcon">🔬</div><h2>Physics Analyzer</h2>
+   <p>Use the instruments inside each lab to collect measurements and analyze results.</p>
+   <div class="cardTag">11 // ANALYSIS</div>
+   <div class="cardBottom">OBSERVE • RECORD • LEARN</div>
+  </div>
 
-<div class="viewerName"
-id="viewerName">
-Rookie Physicist
-</div>
-
-<div class="avatarStage"
-id="avatarStage">
-</div>
-
-<div class="viewerControls">
-
-<button onclick="changeCharacter(-1)">
-◀
-</button>
-
-<button onclick="changeCharacter(1)">
-▶
-</button>
-
-</div>
-
-</div>
-
-<div class="orbit"></div>
-
-<div class="atom">
-⚛
-</div>
-
-</div>
-
+ </div>
 </section>
 
 
-<!-- ================= EXPERIMENTS ================= -->
-
-<section class="section"
-id="experiments">
-
-<div class="sectionHead">
-
-<div>
-<h2>🧪 Experimental Zone</h2>
-<p>Every experiment uses a different physics mechanic.</p>
-</div>
-
-</div>
-
-
-<div class="grid">
-
-
-<div class="card">
-
-<div class="icon">🏎️</div>
-
-<h3>
-Newton's Launchpad
-</h3>
-
-<p>
-Change force and mass and calculate acceleration.
-</p>
-
-<button onclick="openExperiment('newton')">
-Launch experiment →
-</button>
-
-</div>
-
-
-<div class="card">
-
-<div class="icon">🌍</div>
-
-<h3>
-Gravity Jumper
-</h3>
-
-<p>
-Compare jumping on different worlds.
-</p>
-
-<button onclick="openExperiment('gravity')">
-Change planet →
-</button>
-
-</div>
-
-
-<div class="card">
-
-<div class="icon">⚡</div>
-
-<h3>
-Circuit Architect
-</h3>
-
-<p>
-Experiment with voltage, resistance and current.
-</p>
-
-<button onclick="openExperiment('circuit')">
-Build circuit →
-</button>
-
-</div>
-
-
-<div class="card">
-
-<div class="icon">〰️</div>
-
-<h3>
-Wave Forge
-</h3>
-
-<p>
-Create waves by changing amplitude and frequency.
-</p>
-
-<button onclick="openExperiment('waves')">
-Forge wave →
-</button>
-
-</div>
-
-
-<div class="card">
-
-<div class="icon">🎢</div>
-
-<h3>
-Energy Rollercoaster
-</h3>
-
-<p>
-Watch potential energy transform into kinetic energy.
-</p>
-
-<button onclick="openExperiment('energy')">
-Ride →
-</button>
-
-</div>
-
-
-<div class="card">
-
-<div class="icon">🪐</div>
-
-<h3>
-Orbital Chaos
-</h3>
-
-<p>
-Discover how orbital speed changes trajectories.
-</p>
-
-<button onclick="openExperiment('orbit')">
-Enter orbit →
-</button>
-
-</div>
-
-
-<div class="card">
-
-<div class="icon">🧲</div>
-
-<h3>
-Magnetic Arena
-</h3>
-
-<p>
-Watch a charged particle curve through a magnetic field.
-</p>
-
-<button onclick="openExperiment('magnet')">
-Activate →
-</button>
-
-</div>
-
-
-<div class="card">
-
-<div class="icon">🔦</div>
-
-<h3>
-Laser Labyrinth
-</h3>
-
-<p>
-Use reflection to guide a laser beam.
-</p>
-
-<button onclick="openExperiment('laser')">
-Start laser →
-</button>
-
-</div>
-
-
-<div class="card">
-
-<div class="icon">🌀</div>
-
-<h3>
-Quantum Mystery
-</h3>
-
-<p>
-A playful probability-based quantum visualization.
-</p>
-
-<button onclick="openExperiment('quantum')">
-Measure →
-</button>
-
-</div>
-
-
-</div>
-
+<!-- ================= GRAVITY ================= -->
+
+<section class="experiment" id="gravity">
+ <div class="expHeader">
+  <div><h1>🌎 GRAVITY CHAMBER</h1><p>Change the world. Drop the object. Measure reality.</p></div>
+  <button class="back" onclick="showHome()">← LAB</button>
+ </div>
+
+ <div class="workspace">
+  <div class="stage"><canvas id="gCanvas"></canvas></div>
+
+  <div class="panel">
+   <h3>PLANETARY CONTROL</h3>
+
+   <div class="control">
+    <label>Planet <b id="planetLabel">EARTH</b></label>
+    <select id="planet">
+     <option value="9.81">Earth — 9.81 m/s²</option>
+     <option value="1.62">Moon — 1.62 m/s²</option>
+     <option value="3.71">Mars — 3.71 m/s²</option>
+     <option value="24.79">Jupiter — 24.79 m/s²</option>
+    </select>
+   </div>
+
+   <div class="control">
+    <label>Mass <b id="massLabel">5 kg</b></label>
+    <input id="gMass" type="range" min="1" max="30" value="5">
+   </div>
+
+   <button class="btn" onclick="dropObject()">DROP OBJECT</button>
+   <button class="btn alt" onclick="resetGravity()">RESET</button>
+
+   <div class="telemetry">
+    <div class="stat"><span>TIME</span><b id="gTime">0.00 s</b></div>
+    <div class="stat"><span>VELOCITY</span><b id="gVelocity">0 m/s</b></div>
+    <div class="stat"><span>ACCELERATION</span><b id="gAccel">9.81 m/s²</b></div>
+    <div class="stat"><span>IMPACT</span><b id="gImpact">—</b></div>
+   </div>
+
+   <div class="mission"><b>MISSION</b><br>Drop the object and observe how changing the planet changes its motion.</div>
+   <div class="explain">Gravity accelerates objects toward the center of a planet. Mass changes the object's weight, but not its gravitational acceleration in the idealized experiment.</div>
+  </div>
+ </div>
 </section>
 
 
-<!-- ================= CHARACTERS ================= -->
+<!-- ================= PROJECTILE ================= -->
 
-<section class="section"
-id="characters">
+<section class="experiment" id="projectile">
+ <div class="expHeader">
+  <div><h1>🚀 PROJECTILE CANNON</h1><p>Hit the target using mathematics and motion.</p></div>
+  <button class="back" onclick="showHome()">← LAB</button>
+ </div>
 
-<div class="sectionHead">
+ <div class="workspace">
+  <div class="stage"><canvas id="pCanvas"></canvas></div>
 
-<div>
+  <div class="panel">
+   <h3>CANNON CONTROL</h3>
 
-<h2>🧑‍🔬 Character Lab</h2>
+   <div class="control">
+    <label>ANGLE <b id="angleLabel">45°</b></label>
+    <input id="pAngle" type="range" min="10" max="80" value="45">
+   </div>
 
-<p>
-Unlock actual characters — not just clothes.
-</p>
+   <div class="control">
+    <label>POWER <b id="powerLabel">65</b></label>
+    <input id="pPower" type="range" min="20" max="100" value="65">
+   </div>
 
-</div>
+   <div class="control">
+    <label>GRAVITY <b id="pGravityLabel">9.8</b></label>
+    <input id="pGravity" type="range" min="1" max="20" step=".1" value="9.8">
+   </div>
 
-</div>
+   <button class="btn" onclick="fire()">🚀 FIRE CANNON</button>
+   <button class="btn alt" onclick="resetProjectile()">RESET</button>
 
-<div
-class="grid characterGrid"
-id="characterGrid">
-</div>
+   <div class="telemetry">
+    <div class="stat"><span>DISTANCE</span><b id="pDistance">0 m</b></div>
+    <div class="stat"><span>MAX HEIGHT</span><b id="pHeight">0 m</b></div>
+    <div class="stat"><span>TIME</span><b id="pTime">0 s</b></div>
+    <div class="stat"><span>RESULT</span><b id="pResult">READY</b></div>
+   </div>
 
+   <div class="mission"><b>🎯 MISSION</b><br>Hit the red target. Your angle and power determine the trajectory.</div>
+  </div>
+ </div>
 </section>
 
 
-<!-- ================= SHOP ================= -->
+<!-- ================= NEWTON ================= -->
 
-<section class="section"
-id="shop">
+<section class="experiment" id="newton">
+ <div class="expHeader">
+  <div><h1>⚙️ NEWTON WORKSHOP</h1><p>Build a force and watch acceleration emerge.</p></div>
+  <button class="back" onclick="showHome()">← LAB</button>
+ </div>
 
-<div class="sectionHead">
+ <div class="workspace">
+  <div class="stage"><canvas id="nCanvas"></canvas></div>
 
-<div>
+  <div class="panel">
+   <h3>FORCE MACHINE</h3>
 
-<h2>🛍️ Avatar Vault</h2>
+   <div class="control">
+    <label>FORCE <b id="forceLabel">50 N</b></label>
+    <input id="forceSlider" type="range" min="0" max="200" value="50">
+   </div>
 
-<p>
-Buy skins and equip them on your character.
-</p>
+   <div class="control">
+    <label>MASS <b id="nMassLabel">10 kg</b></label>
+    <input id="nMassSlider" type="range" min="1" max="50" value="10">
+   </div>
 
-</div>
+   <div class="control">
+    <label>FRICTION <b id="frictionLabel">10%</b></label>
+    <input id="frictionSlider" type="range" min="0" max="80" value="10">
+   </div>
 
-</div>
+   <button class="btn" onclick="pushBlock()">⚙️ APPLY FORCE</button>
+   <button class="btn alt" onclick="resetNewton()">RESET</button>
 
-<div
-class="grid shop"
-id="shopGrid">
-</div>
+   <div class="telemetry">
+    <div class="stat"><span>FORCE</span><b id="nForce">50 N</b></div>
+    <div class="stat"><span>ACCELERATION</span><b id="nAccel">0 m/s²</b></div>
+    <div class="stat"><span>VELOCITY</span><b id="nVelocity">0 m/s</b></div>
+    <div class="stat"><span>DISTANCE</span><b id="nDistance">0 m</b></div>
+   </div>
 
+   <div class="explain">Newton's second law connects force, mass and acceleration: F = ma. Friction reduces the net force acting on the block.</div>
+  </div>
+ </div>
 </section>
 
 
-<!-- ================= CODES ================= -->
+<!-- ================= COLLISION ================= -->
 
-<section class="section"
-id="codes">
+<section class="experiment" id="collision">
+ <div class="expHeader">
+  <div><h1>💥 COLLISION ARENA</h1><p>Two objects. One collision. Conservation of momentum.</p></div>
+  <button class="back" onclick="showHome()">← LAB</button>
+ </div>
 
-<div class="panel">
+ <div class="workspace">
+  <div class="stage"><canvas id="cCanvas"></canvas></div>
 
-<div class="sectionHead">
+  <div class="panel">
+   <h3>COLLISION SETUP</h3>
 
-<div>
+   <div class="control">
+    <label>OBJECT A MASS <b id="caLabel">5 kg</b></label>
+    <input id="caMass" type="range" min="1" max="20" value="5">
+   </div>
 
-<h2>🎁 Code Terminal</h2>
+   <div class="control">
+    <label>OBJECT B MASS <b id="cbLabel">10 kg</b></label>
+    <input id="cbMass" type="range" min="1" max="20" value="10">
+   </div>
 
-<p>
-Each code can only be redeemed once on this device.
-</p>
+   <div class="control">
+    <label>OBJECT A SPEED <b id="csLabel">70</b></label>
+    <input id="cSpeed" type="range" min="20" max="100" value="70">
+   </div>
 
-</div>
+   <button class="btn" onclick="startCollision()">💥 COLLIDE</button>
+   <button class="btn alt" onclick="resetCollision()">RESET</button>
 
-</div>
+   <div class="telemetry">
+    <div class="stat"><span>TOTAL MOMENTUM</span><b id="momentum">0</b></div>
+    <div class="stat"><span>A VELOCITY</span><b id="caVel">70</b></div>
+    <div class="stat"><span>B VELOCITY</span><b id="cbVel">-30</b></div>
+    <div class="stat"><span>STATUS</span><b id="collisionStatus">READY</b></div>
+   </div>
 
-<div class="codeBox">
-
-<input
-id="codeInput"
-placeholder="Enter code...">
-
-<button onclick="redeemCode()">
-REDEEM
-</button>
-
-</div>
-
-</div>
-
+   <div class="mission"><b>MISSION</b><br>Change the masses and observe how the collision changes the final velocities.</div>
+  </div>
+ </div>
 </section>
 
 
-<section class="section">
+<!-- ================= ELECTRICITY ================= -->
 
-<div class="grid">
+<section class="experiment" id="electricity">
+ <div class="expHeader">
+  <div><h1>⚡ CIRCUIT LABORATORY</h1><p>Build the circuit and make electricity flow.</p></div>
+  <button class="back" onclick="showHome()">← LAB</button>
+ </div>
 
-<div class="card">
+ <div class="workspace">
+  <div class="stage">
+   <div class="circuit">
+    <div class="cWire wA"></div><div class="cWire wB"></div>
+    <div class="cWire wC"></div><div class="cWire wD"></div>
 
-<h3>🏆 Lab Progress</h3>
+    <div class="component battery">🔋<br><small>BATTERY</small></div>
+    <div class="component bulb" id="bulb">💡</div>
+    <div class="component sw" onclick="toggleCircuit()">⏻ SWITCH</div>
 
-<p>
-Complete unique experiments to level up.
-</p>
+    <div class="electron e1"></div>
+    <div class="electron e2" style="animation-delay:.7s"></div>
+    <div class="electron e3" style="animation-delay:1.4s"></div>
+   </div>
+  </div>
 
-<div class="progress">
-<i id="progress"></i>
-</div>
+  <div class="panel">
+   <h3>POWER STATION</h3>
 
-</div>
+   <div class="control">
+    <label>VOLTAGE <b id="voltageLabel">9 V</b></label>
+    <input id="voltage" type="range" min="1" max="24" value="9">
+   </div>
+
+   <div class="control">
+    <label>RESISTANCE <b id="resistanceLabel">10 Ω</b></label>
+    <input id="resistance" type="range" min="1" max="50" value="10">
+   </div>
+
+   <button class="btn" onclick="toggleCircuit()">⏻ TOGGLE SWITCH</button>
+
+   <div class="telemetry">
+    <div class="stat"><span>CURRENT</span><b id="current">0 A</b></div>
+    <div class="stat"><span>POWER</span><b id="electricalPower">0 W</b></div>
+    <div class="stat"><span>CIRCUIT</span><b id="circuitStatus">OPEN</b></div>
+   </div>
+
+   <div class="mission"><b>⚡ MISSION</b><br>Close the circuit and experiment with voltage and resistance.</div>
+
+   <div class="explain">Ohm's law: V = IR. Current increases with voltage and decreases as resistance increases.</div>
+  </div>
+ </div>
+</section>
 
 
-<div class="card">
+<!-- ================= MAGNET ================= -->
 
-<h3>🧠 Physics XP</h3>
+<section class="experiment" id="magnet">
+ <div class="expHeader">
+  <div><h1>🧲 MAGNETIC FIELD SCANNER</h1><p>Move your mouse. Reveal an invisible field.</p></div>
+  <button class="back" onclick="showHome()">← LAB</button>
+ </div>
 
-<p id="xpText">
-0 XP earned
-</p>
+ <div class="workspace">
+  <div class="stage"><canvas id="mCanvas"></canvas></div>
 
-</div>
+  <div class="panel">
+   <h3>FIELD CONTROL</h3>
+
+   <div class="control">
+    <label>FIELD STRENGTH <b id="magLabel">5</b></label>
+    <input id="magStrength" type="range" min="1" max="10" value="5">
+   </div>
+
+   <button class="btn" onclick="scanMagnet()">SCAN FIELD</button>
+   <button class="btn alt" onclick="resetMagnet()">RESET</button>
+
+   <div class="telemetry">
+    <div class="stat"><span>STRENGTH</span><b id="magTelemetry">5</b></div>
+    <div class="stat"><span>FIELD LINES</span><b id="fieldLines">12</b></div>
+    <div class="stat"><span>SCAN</span><b id="magStatus">READY</b></div>
+   </div>
+
+   <div class="mission"><b>🧲 MISSION</b><br>Move your cursor around the stage and watch the field respond.</div>
+
+   <div class="explain">Field lines are a visualization tool. They indicate the direction of a magnetic field and are drawn more densely where the field is stronger.</div>
+  </div>
+ </div>
+</section>
 
 
-<div class="card">
+<!-- ================= WAVES ================= -->
 
-<h3>💾 Auto Save</h3>
+<section class="experiment" id="waves">
+ <div class="expHeader">
+  <div><h1>〰️ WAVE GENERATOR</h1><p>Turn frequency and amplitude into motion.</p></div>
+  <button class="back" onclick="showHome()">← LAB</button>
+ </div>
 
-<p>
-Your progress is automatically stored on this device.
-</p>
+ <div class="workspace">
+  <div class="stage"><canvas id="wCanvas"></canvas></div>
 
-</div>
+  <div class="panel">
+   <h3>OSCILLATOR</h3>
 
-</div>
+   <div class="control">
+    <label>FREQUENCY <b id="freqLabel">3 Hz</b></label>
+    <input id="frequency" type="range" min="1" max="15" value="3">
+   </div>
 
+   <div class="control">
+    <label>AMPLITUDE <b id="ampLabel">50</b></label>
+    <input id="amplitude" type="range" min="5" max="100" value="50">
+   </div>
+
+   <div class="control">
+    <label>WAVE SPEED <b id="waveSpeedLabel">5</b></label>
+    <input id="waveSpeed" type="range" min="1" max="10" value="5">
+   </div>
+
+   <button class="btn" onclick="wavePulse()">⚡ SEND PULSE</button>
+
+   <div class="telemetry">
+    <div class="stat"><span>FREQUENCY</span><b id="wFreq">3 Hz</b></div>
+    <div class="stat"><span>AMPLITUDE</span><b id="wAmp">50</b></div>
+    <div class="stat"><span>WAVELENGTH</span><b id="wLength">33.3</b></div>
+   </div>
+
+   <div class="mission"><b>〰️ MISSION</b><br>Create a high-frequency wave and then send a pulse.</div>
+
+   <div class="explain">Frequency describes how many oscillations occur per second. Amplitude describes the maximum displacement from equilibrium.</div>
+  </div>
+ </div>
+</section>
+
+
+<!-- ================= ORBIT ================= -->
+
+<section class="experiment" id="orbit">
+ <div class="expHeader">
+  <div><h1>🪐 ORBITAL MISSION</h1><p>Find the balance between falling and escaping.</p></div>
+  <button class="back" onclick="showHome()">← LAB</button>
+ </div>
+
+ <div class="workspace">
+  <div class="stage"><canvas id="oCanvas"></canvas></div>
+
+  <div class="panel">
+   <h3>MISSION CONTROL</h3>
+
+   <div class="control">
+    <label>LAUNCH SPEED <b id="orbitSpeedLabel">50</b></label>
+    <input id="orbitSpeed" type="range" min="20" max="100" value="50">
+   </div>
+
+   <button class="btn" onclick="launchOrbit()">🚀 LAUNCH</button>
+   <button class="btn alt" onclick="resetOrbit()">RESET</button>
+
+   <div class="telemetry">
+    <div class="stat"><span>ALTITUDE</span><b id="orbitAltitude">—</b></div>
+    <div class="stat"><span>VELOCITY</span><b id="orbitVelocity">—</b></div>
+    <div class="stat"><span>MISSION</span><b id="orbitStatus">READY</b></div>
+   </div>
+
+   <div class="mission"><b>🪐 MISSION</b><br>Try different launch speeds. Can you keep the satellite around the planet?</div>
+
+   <div class="explain">An orbit occurs when an object's sideways motion and gravitational attraction combine to produce a curved path around another body.</div>
+  </div>
+ </div>
+</section>
+
+
+<!-- ================= HEAT ================= -->
+
+<section class="experiment" id="heat">
+ <div class="expHeader">
+  <div><h1>🔥 THERMAL CHAMBER</h1><p>Watch invisible kinetic energy become visible.</p></div>
+  <button class="back" onclick="showHome()">← LAB</button>
+ </div>
+
+ <div class="workspace">
+  <div class="stage"><canvas id="hCanvas"></canvas></div>
+
+  <div class="panel">
+   <h3>THERMAL CONTROL</h3>
+
+   <div class="control">
+    <label>TEMPERATURE <b id="tempLabel">50°C</b></label>
+    <input id="temperature" type="range" min="0" max="100" value="50">
+   </div>
+
+   <button class="btn" onclick="heatBurst()">🔥 HEAT BURST</button>
+   <button class="btn alt" onclick="coolBurst()">❄️ COOL DOWN</button>
+
+   <div class="telemetry">
+    <div class="stat"><span>TEMPERATURE</span><b id="heatTemp">50°C</b></div>
+    <div class="stat"><span>PARTICLE SPEED</span><b id="particleSpeed">50%</b></div>
+    <div class="stat"><span>STATE</span><b id="heatState">WARM</b></div>
+   </div>
+
+   <div class="mission"><b>🔥 MISSION</b><br>Heat the chamber until the particles become extremely energetic.</div>
+
+   <div class="explain">Increasing temperature increases the average kinetic energy of particles, so their random motion becomes faster.</div>
+  </div>
+ </div>
+</section>
+
+
+<!-- ================= BLACK HOLE ================= -->
+
+<section class="experiment" id="blackhole">
+ <div class="expHeader">
+  <div><h1>🕳️ BLACK HOLE LAB</h1><p>Extreme gravity experiment // approach at your own risk.</p></div>
+  <button class="back" onclick="showHome()">← LAB</button>
+ </div>
+
+ <div class="workspace">
+  <div class="stage"><canvas id="bhCanvas"></canvas></div>
+
+  <div class="panel">
+   <h3>EXTREME GRAVITY</h3>
+
+   <div class="control">
+    <label>LAUNCH SPEED <b id="bhSpeedLabel">40</b></label>
+    <input id="bhSpeed" type="range" min="10" max="100" value="40">
+   </div>
+
+   <div class="control">
+    <label>GRAVITY <b id="bhGravityLabel">5</b></label>
+    <input id="bhGravity" type="range" min="1" max="10" value="5">
+   </div>
+
+   <button class="btn" onclick="launchBlackHole()">🕳️ RELEASE OBJECT</button>
+   <button class="btn alt" onclick="resetBlackHole()">RESET</button>
+
+   <div class="telemetry">
+    <div class="stat"><span>DISTANCE</span><b id="bhDistance">—</b></div>
+    <div class="stat"><span>SPEED</span><b id="bhVelocity">—</b></div>
+    <div class="stat"><span>STATUS</span><b id="bhStatus">READY</b></div>
+   </div>
+
+   <div class="mission"><b>⚠ EXTREME MISSION</b><br>Get close to the event horizon without crossing it.</div>
+
+   <div class="explain">A black hole's gravity becomes extreme near its event horizon. This simulation is an educational visualization, not a full general-relativity model.</div>
+  </div>
+ </div>
 </section>
 
 </main>
-
-
-<footer>
-
-Aditya's Physics Lab • Learn physics. Experiment. Discover.
-
-</footer>
-
-
-<!-- ================= MODAL ================= -->
-
-<div class="modal"
-id="modal">
-
-<div class="modalBox">
-
-<div class="modalTop">
-
-<h2 id="modalTitle">
-Experiment
-</h2>
-
-<button
-class="close"
-onclick="closeModal()">
-✕
-</button>
-
 </div>
-
-<div id="modalBody"></div>
-
-</div>
-
-</div>
-
-
-<div class="toast"
-id="toast">
 </div>
 
 
 <script>
-
 /* =========================================================
    SAVE SYSTEM
 ========================================================= */
 
-const SAVE_KEY = "aditya_physics_lab_final_v6";
-
-const DEFAULT_STATE = {
-
-coins:0,
-
-xp:0,
-
-completed:[],
-
-characters:["rookie"],
-
-skins:["classic"],
-
-selectedCharacter:"rookie",
-
-equippedSkin:"classic",
-
-redeemedCodes:[]
-
+let save=JSON.parse(localStorage.getItem("adityaPhysicsLabSave")||"null")||{
+ xp:0,
+ level:1,
+ achievements:[],
+ completed:{}
 };
 
-let state;
-
-try{
-
-state =
-JSON.parse(localStorage.getItem(SAVE_KEY))
-||
-structuredClone(DEFAULT_STATE);
-
-}catch{
-
-state =
-structuredClone(DEFAULT_STATE);
-
+function saveGame(){
+ localStorage.setItem("adityaPhysicsLabSave",JSON.stringify(save));
+ updateUI();
 }
 
+function addXP(amount){
+ save.xp+=amount;
 
-/* Make sure old/broken saves cannot crash the game */
+ while(save.xp>=100){
+  save.xp-=100;
+  save.level++;
+  toast("LEVEL UP! You reached LAB LEVEL "+save.level);
+ }
 
-if(!Array.isArray(state.completed))
-state.completed=[];
-
-if(!Array.isArray(state.characters))
-state.characters=["rookie"];
-
-if(!Array.isArray(state.skins))
-state.skins=["classic"];
-
-if(!Array.isArray(state.redeemedCodes))
-state.redeemedCodes=[];
-
-if(!state.characters.includes("rookie"))
-state.characters.push("rookie");
-
-if(!state.skins.includes("classic"))
-state.skins.push("classic");
-
-if(!state.selectedCharacter)
-state.selectedCharacter="rookie";
-
-if(!state.equippedSkin)
-state.equippedSkin="classic";
-
-
-function save(){
-
-localStorage.setItem(
-SAVE_KEY,
-JSON.stringify(state)
-);
-
-updateUI();
-
+ saveGame();
 }
 
-
-/* =========================================================
-   CHARACTERS
-========================================================= */
-
-const characters=[
-
-{
-id:"rookie",
-name:"Rookie Physicist",
-icon:"🧑‍🔬",
-price:0,
-body:"#55e7ff",
-hair:"#202938"
-},
-
-{
-id:"gravity",
-name:"Gravity Ranger",
-icon:"🧑‍🚀",
-price:500,
-body:"#8c70ff",
-hair:"#172033"
-},
-
-{
-id:"spark",
-name:"Spark Engineer",
-icon:"👩‍🔬",
-price:900,
-body:"#ffd45a",
-hair:"#4b251d"
-},
-
-{
-id:"quantum",
-name:"Quantum Ghost",
-icon:"👻",
-price:1500,
-body:"#b78cff",
-hair:"#e8e3ff"
-},
-
-{
-id:"cosmo",
-name:"Cosmo Captain",
-icon:"🧙‍♂️",
-price:2500,
-body:"#56e39f",
-hair:"#33251d"
-},
-
-{
-id:"magnet",
-name:"Magnet Master",
-icon:"🤖",
-price:4000,
-body:"#ff657b",
-hair:"#7b879d"
-},
-
-{
-id:"admin",
-name:"Lab Architect",
-icon:"🦾",
-price:10000,
-body:"#55e7ff",
-hair:"#ffffff"
+function achievement(id,text){
+ if(save.achievements.includes(id))return;
+ save.achievements.push(id);
+ toast("🏆 "+text+"  +25 XP");
+ addXP(25);
+ saveGame();
 }
-
-];
-
-
-/* =========================================================
-   SKINS
-========================================================= */
-
-const skins=[
-
-{
-id:"classic",
-name:"Classic Lab Coat",
-icon:"🥼",
-price:0,
-color:"#55e7ff",
-accessory:""
-},
-
-{
-id:"neon",
-name:"Neon Coat",
-icon:"🧥",
-price:350,
-color:"#55e7ff",
-accessory:""
-},
-
-{
-id:"gold",
-name:"Golden Scientist",
-icon:"✨",
-price:800,
-color:"#ffd45a",
-accessory:"✨"
-},
-
-{
-id:"space",
-name:"Space Suit",
-icon:"🚀",
-price:1200,
-color:"#9b68ff",
-accessory:"🚀"
-},
-
-{
-id:"magnet",
-name:"Magnetic Armor",
-icon:"🧲",
-price:2000,
-color:"#ff657b",
-accessory:"🧲"
-},
-
-{
-id:"quantum",
-name:"Quantum Aura",
-icon:"🌀",
-price:3500,
-color:"#b78cff",
-accessory:"🌀"
-},
-
-{
-id:"legend",
-name:"Reality Breaker",
-icon:"💠",
-price:7500,
-color:"#55e7ff",
-accessory:"💠"
-},
-
-{
-id:"crown",
-name:"Lab Crown",
-icon:"👑",
-price:15000,
-color:"#ffd45a",
-accessory:"👑"
-}
-
-];
-
-
-/* =========================================================
-   CHARACTER VIEWER
-========================================================= */
-
-function renderCharacter(){
-
-const character =
-characters.find(
-c=>c.id===state.selectedCharacter
-)
-||
-characters[0];
-
-const skin =
-skins.find(
-s=>s.id===state.equippedSkin
-)
-||
-skins[0];
-
-document.getElementById("viewerName")
-.textContent=character.name;
-
-document.getElementById("avatarStage")
-.innerHTML=`
-
-<div class="character">
-
-<div
-class="hair"
-style="background:${character.hair}">
-</div>
-
-<div class="head"></div>
-
-<div class="eye one"></div>
-<div class="eye two"></div>
-
-<div
-class="body"
-style="background:${skin.color}">
-</div>
-
-<div class="arm left"></div>
-<div class="arm right"></div>
-
-<div class="leg left"></div>
-<div class="leg right"></div>
-
-<div class="shoe left"></div>
-<div class="shoe right"></div>
-
-<div class="accessory">
-${skin.accessory}
-</div>
-
-</div>
-
-`;
-
-}
-
-
-/* =========================================================
-   CHARACTER BUY / EQUIP
-========================================================= */
-
-function useCharacter(id){
-
-const character =
-characters.find(c=>c.id===id);
-
-if(!character)return;
-
-if(
-state.characters.includes(id)
-){
-
-state.selectedCharacter=id;
-
-save();
-
-showToast(
-"🧑‍🔬 "+character.name+
-" equipped!"
-);
-
-return;
-
-}
-
-if(
-state.coins<character.price
-){
-
-showToast("❌ Not enough coins.");
-
-return;
-
-}
-
-state.coins-=character.price;
-
-state.characters.push(id);
-
-state.selectedCharacter=id;
-
-save();
-
-showToast(
-"🔓 "+character.name+
-" unlocked!"
-);
-
-}
-
-
-/* =========================================================
-   CHARACTER SWITCH
-========================================================= */
-
-function changeCharacter(direction){
-
-const owned =
-characters.filter(
-c=>state.characters.includes(c.id)
-);
-
-let index=
-owned.findIndex(
-c=>c.id===state.selectedCharacter
-);
-
-if(index<0)index=0;
-
-index=
-(
-index+
-direction+
-owned.length
-)
-%
-owned.length;
-
-state.selectedCharacter=
-owned[index].id;
-
-save();
-
-}
-
-
-/* =========================================================
-   SKINS
-========================================================= */
-
-function useSkin(id){
-
-const skin=
-skins.find(
-s=>s.id===id
-);
-
-if(!skin)return;
-
-if(
-state.skins.includes(id)
-){
-
-state.equippedSkin=id;
-
-save();
-
-showToast(
-"🎨 "+skin.name+
-" equipped!"
-);
-
-return;
-
-}
-
-if(
-state.coins<skin.price
-){
-
-showToast("❌ Not enough coins.");
-
-return;
-
-}
-
-state.coins-=skin.price;
-
-state.skins.push(id);
-
-state.equippedSkin=id;
-
-save();
-
-showToast(
-"🎨 "+skin.name+
-" unlocked!"
-);
-
-}
-
-
-/* =========================================================
-   CHARACTER UI
-========================================================= */
-
-function renderCharacters(){
-
-const box=
-document.getElementById(
-"characterGrid"
-);
-
-box.innerHTML=
-characters.map(c=>{
-
-const owned=
-state.characters.includes(c.id);
-
-const selected=
-state.selectedCharacter===c.id;
-
-return`
-
-<div class="card">
-
-<div
-class="avatar"
-style="background:radial-gradient(circle,${c.body}33,#0b1220)">
-${c.icon}
-</div>
-
-<h3>${c.name}</h3>
-
-<p>
-${owned
-?
-"Playable character unlocked."
-:
-"Unlock this actual character."
-}
-</p>
-
-<button
-onclick="useCharacter('${c.id}')">
-
-${
-owned
-?
-selected
-?
-"✅ Equipped"
-:
-"Equip Character"
-:
-"🔒 Unlock 💲 "+
-c.price.toLocaleString()
-}
-
-</button>
-
-</div>
-
-`;
-
-}).join("");
-
-}
-
-
-/* =========================================================
-   SHOP UI
-========================================================= */
-
-function renderShop(){
-
-document.getElementById("shopGrid")
-.innerHTML=
-
-skins.map(s=>{
-
-const owned=
-state.skins.includes(s.id);
-
-const equipped=
-state.equippedSkin===s.id;
-
-return`
-
-<div class="card">
-
-<div class="icon">
-${s.icon}
-</div>
-
-<h3>
-${s.name}
-</h3>
-
-<p>
-
-${
-owned
-?
-"<span class='owned'>✓ Owned</span>"
-:
-"<span class='price'>💲 "+
-s.price.toLocaleString()+
-"</span>"
-}
-
-</p>
-
-<button
-onclick="useSkin('${s.id}')">
-
-${
-equipped
-?
-"✓ Equipped"
-:
-owned
-?
-"Equip"
-:
-"Buy"
-}
-
-</button>
-
-</div>
-
-`;
-
-}).join("");
-
-}
-
-
-/* =========================================================
-   EXPERIMENT REWARD SYSTEM
-========================================================= */
-
-/*
-   IMPORTANT:
-
-   An experiment ID can appear in state.completed only once.
-
-   This completely prevents:
-   open → complete → close → reopen → complete
-   from generating infinite coins.
-
-   Each experiment gives:
-   75 coins + 100 XP
-   exactly ONCE per device.
-*/
-
-const experimentList=[
-"newton",
-"gravity",
-"circuit",
-"waves",
-"energy",
-"orbit",
-"magnet",
-"laser",
-"quantum"
-];
-
-
-function completeExperiment(id){
-
-if(
-!experimentList.includes(id)
-)return;
-
-if(
-state.completed.includes(id)
-){
-
-showToast(
-"✅ Reward already claimed!"
-);
-
-return;
-
-}
-
-state.completed.push(id);
-
-state.coins+=75;
-
-state.xp+=100;
-
-save();
-
-showToast(
-"🧪 Completed! +75 coins • +100 XP"
-);
-
-}
-
-
-/* =========================================================
-   CODES
-========================================================= */
-
-const codes={
-
-"firsttimepack2026":1000,
-
-"creatoraditt":1000,
-
-"magnetachiv":1000,
-
-"secretecodeforadmins999":10000000
-
-};
-
-
-function redeemCode(){
-
-const input=
-document.getElementById(
-"codeInput"
-);
-
-const code=
-input.value
-.trim()
-.toLowerCase();
-
-if(!codes[code]){
-
-showToast(
-"❌ Invalid code"
-);
-
-return;
-
-}
-
-if(
-state.redeemedCodes.includes(code)
-){
-
-showToast(
-"⚠️ Code already redeemed."
-);
-
-return;
-
-}
-
-state.redeemedCodes.push(code);
-
-state.coins+=codes[code];
-
-save();
-
-input.value="";
-
-showToast(
-"🎁 +"+
-codes[code].toLocaleString()+
-" coins!"
-);
-
-}
-
-
-/* =========================================================
-   UI
-========================================================= */
 
 function updateUI(){
-
-document.getElementById(
-"coins"
-).textContent=
-state.coins.toLocaleString();
-
-document.getElementById(
-"expCount"
-).textContent=
-state.completed.length;
-
-document.getElementById(
-"charCount"
-).textContent=
-state.characters.length;
-
-document.getElementById(
-"skinCount"
-).textContent=
-state.skins.length;
-
-document.getElementById(
-"xpText"
-).textContent=
-state.xp+
-" XP earned";
-
-document.getElementById(
-"progress"
-).style.width=
-(
-state.completed.length/
-experimentList.length*
-100
-)+"%";
-
-renderCharacters();
-
-renderShop();
-
-renderCharacter();
-
+ document.getElementById("level").textContent=save.level;
+ document.getElementById("homeLevel").textContent=save.level;
+ document.getElementById("homeXP").textContent=save.xp;
+ document.getElementById("achCount").textContent=save.achievements.length;
+ document.getElementById("xpfill").style.width=save.xp+"%";
+ document.getElementById("xptext").textContent=save.xp+" / 100 XP";
 }
 
-
-/* =========================================================
-   TOAST
-========================================================= */
-
-function showToast(message){
-
-const toast=
-document.getElementById("toast");
-
-toast.textContent=message;
-
-toast.classList.add("show");
-
-clearTimeout(
-window.toastTimer
-);
-
-window.toastTimer=
-setTimeout(
-()=>{
-toast.classList.remove("show");
-},
-2500
-);
-
+function toast(msg){
+ const t=document.getElementById("toast");
+ document.getElementById("toastText").textContent=msg;
+ t.classList.add("show");
+ setTimeout(()=>t.classList.remove("show"),3500);
 }
+
+updateUI();
 
 
 /* =========================================================
    NAVIGATION
 ========================================================= */
 
-function go(id){
-
-document
-.getElementById(id)
-.scrollIntoView({
-behavior:"smooth"
-});
-
+function showHome(){
+ document.querySelectorAll(".experiment").forEach(e=>e.style.display="none");
+ document.getElementById("home").style.display="block";
+ document.querySelectorAll(".nav").forEach(n=>n.classList.remove("active"));
+ document.querySelector(".nav").classList.add("active");
+ resizeAll();
 }
 
+function openExp(id){
+ document.getElementById("home").style.display="none";
+ document.querySelectorAll(".experiment").forEach(e=>e.style.display="none");
+ document.getElementById(id).style.display="block";
 
-/* =========================================================
-   EXPERIMENT WINDOW
-========================================================= */
+ document.querySelectorAll(".nav").forEach(n=>n.classList.remove("active"));
 
-function openExperiment(type){
-
-const modal=
-document.getElementById("modal");
-
-const title=
-document.getElementById("modalTitle");
-
-const body=
-document.getElementById("modalBody");
-
-
-/* NEWTON */
-
-if(type==="newton"){
-
-title.textContent=
-"🏎️ Newton's Launchpad";
-
-body.innerHTML=`
-
-<p>
-Newton's second law:
-<b>F = ma</b>
-</p>
-
-<br>
-
-<label>
-Force:
-<b id="forceValue">50</b> N
-</label>
-
-<input
-id="force"
-type="range"
-min="1"
-max="100"
-value="50"
-style="width:100%"
->
-
-<br><br>
-
-<label>
-Mass:
-<b id="massValue">10</b> kg
-</label>
-
-<input
-id="mass"
-type="range"
-min="1"
-max="50"
-value="10"
-style="width:100%"
->
-
-<div class="card">
-
-<h3 id="acceleration">
-Acceleration: 5.00 m/s²
-</h3>
-
-</div>
-
-<button
-class="primary"
-onclick="launchNewton()">
-
-🚀 Launch Vehicle
-
-</button>
-
-<button
-class="secondary"
-onclick="completeExperiment('newton')">
-
-🏆 Complete Experiment
-
-</button>
-
-<div
-id="newtonResult"
-style="margin-top:15px">
-</div>
-
-`;
-
-document
-.getElementById("force")
-.addEventListener(
-"input",
-updateNewton
-);
-
-document
-.getElementById("mass")
-.addEventListener(
-"input",
-updateNewton
-);
-
+ resizeAll();
 }
 
-
-/* GRAVITY */
-
-if(type==="gravity"){
-
-title.textContent=
-"🌍 Gravity Jumper";
-
-body.innerHTML=`
-
-<p>
-Choose a planet.
-</p>
-
-<div class="grid">
-
-<button
-class="secondary"
-onclick="jump(1.62,'Moon')">
-🌙 Moon
-</button>
-
-<button
-class="secondary"
-onclick="jump(9.81,'Earth')">
-🌍 Earth
-</button>
-
-<button
-class="secondary"
-onclick="jump(24.79,'Jupiter')">
-🪐 Jupiter
-</button>
-
-</div>
-
-<div
-class="card"
-style="margin-top:15px">
-
-<h3 id="jumpResult">
-Choose a planet
-</h3>
-
-</div>
-
-<button
-class="primary"
-onclick="completeExperiment('gravity')">
-
-🏆 Complete
-
-</button>
-
-`;
-
+function resizeAll(){
+ document.querySelectorAll("canvas").forEach(c=>{
+  if(c.parentElement){
+   c.width=c.parentElement.clientWidth;
+   c.height=c.parentElement.clientHeight;
+  }
+ });
 }
 
-
-/* CIRCUIT */
-
-if(type==="circuit"){
-
-title.textContent=
-"⚡ Circuit Architect";
-
-body.innerHTML=`
-
-<p>
-Ohm's Law:
-<b>I = V / R</b>
-</p>
-
-<label>
-Voltage:
-<b id="voltageValue">12</b> V
-</label>
-
-<input
-id="voltage"
-type="range"
-min="1"
-max="24"
-value="12"
-style="width:100%"
->
-
-<br><br>
-
-<label>
-Resistance:
-<b id="resistanceValue">6</b> Ω
-</label>
-
-<input
-id="resistance"
-type="range"
-min="1"
-max="30"
-value="6"
-style="width:100%"
->
-
-<div class="card">
-
-<h3 id="currentResult">
-Current: 2.00 A
-</h3>
-
-</div>
-
-<button
-class="primary"
-onclick="completeExperiment('circuit')">
-
-🏆 Complete
-
-</button>
-
-`;
-
-document
-.getElementById("voltage")
-.addEventListener(
-"input",
-updateCircuit
-);
-
-document
-.getElementById("resistance")
-.addEventListener(
-"input",
-updateCircuit
-);
-
-}
-
-
-/* WAVES */
-
-if(type==="waves"){
-
-title.textContent=
-"〰️ Wave Forge";
-
-body.innerHTML=`
-
-<p>
-Change frequency and amplitude.
-</p>
-
-<label>
-Frequency
-</label>
-
-<input
-id="frequency"
-type="range"
-min="1"
-max="15"
-value="5"
-style="width:100%"
->
-
-<br>
-
-<label>
-Amplitude
-</label>
-
-<input
-id="amplitude"
-type="range"
-min="10"
-max="100"
-value="50"
-style="width:100%"
->
-
-<canvas
-id="waveCanvas"
-width="700"
-height="260"
-style="background:#050a12;border-radius:15px;width:100%;margin-top:15px">
-</canvas>
-
-<button
-class="primary"
-onclick="completeExperiment('waves')">
-
-🏆 Complete
-
-</button>
-
-`;
-
-document
-.getElementById("frequency")
-.addEventListener(
-"input",
-drawWave
-);
-
-document
-.getElementById("amplitude")
-.addEventListener(
-"input",
-drawWave
-);
-
-setTimeout(drawWave,20);
-
-}
-
-
-/* ENERGY */
-
-if(type==="energy"){
-
-title.textContent=
-"🎢 Energy Rollercoaster";
-
-body.innerHTML=`
-
-<p>
-Watch the cart travel down the track.
-</p>
-
-<div
-class="experimentStage">
-
-<div
-id="cart"
-class="ball"
-style="left:30px;top:100px">
-</div>
-
-<div class="track"></div>
-
-</div>
-
-<button
-class="primary"
-onclick="runEnergy()">
-
-▶ Start Ride
-
-</button>
-
-<button
-class="secondary"
-onclick="completeExperiment('energy')">
-
-🏆 Complete
-
-</button>
-
-`;
-
-}
-
-
-/* ORBIT */
-
-if(type==="orbit"){
-
-title.textContent=
-"🪐 Orbital Chaos";
-
-body.innerHTML=`
-
-<p>
-Change orbital velocity.
-</p>
-
-<input
-id="orbitalSpeed"
-type="range"
-min="10"
-max="100"
-value="50"
-style="width:100%"
->
-
-<div class="card">
-
-<h3 id="orbitResult">
-Stable orbit
-</h3>
-
-</div>
-
-<button
-class="primary"
-onclick="completeExperiment('orbit')">
-
-🏆 Complete
-
-</button>
-
-`;
-
-document
-.getElementById("orbitalSpeed")
-.addEventListener(
-"input",
-updateOrbit
-);
-
-}
-
-
-/* MAGNET */
-
-if(type==="magnet"){
-
-title.textContent=
-"🧲 Magnetic Arena";
-
-body.innerHTML=`
-
-<p>
-Activate the magnetic field.
-</p>
-
-<div
-class="experimentStage">
-
-<div
-id="particle"
-class="ball"
-style="left:30px;top:140px">
-</div>
-
-</div>
-
-<button
-class="primary"
-onclick="runMagnet()">
-
-🧲 Activate
-
-</button>
-
-<button
-class="secondary"
-onclick="completeExperiment('magnet')">
-
-🏆 Complete
-
-</button>
-
-`;
-
-}
-
-
-/* LASER */
-
-if(type==="laser"){
-
-title.textContent=
-"🔦 Laser Labyrinth";
-
-body.innerHTML=`
-
-<p>
-Rotate the mirror and change the reflected beam.
-</p>
-
-<input
-id="laserAngle"
-type="range"
-min="-60"
-max="60"
-value="0"
-style="width:100%"
->
-
-<canvas
-id="laserCanvas"
-width="700"
-height="300"
-style="background:#050a12;border-radius:15px;width:100%">
-</canvas>
-
-<button
-class="primary"
-onclick="completeExperiment('laser')">
-
-🏆 Complete
-
-</button>
-
-`;
-
-document
-.getElementById("laserAngle")
-.addEventListener(
-"input",
-drawLaser
-);
-
-setTimeout(drawLaser,20);
-
-}
-
-
-/* QUANTUM */
-
-if(type==="quantum"){
-
-title.textContent=
-"🌀 Quantum Mystery";
-
-body.innerHTML=`
-
-<p>
-Measure the simulated quantum state.
-</p>
-
-<div
-class="card"
-style="text-align:center">
-
-<div
-id="quantumResult"
-style="font-size:70px">
-?
-</div>
-
-<h3 id="quantumText">
-Unknown
-</h3>
-
-</div>
-
-<button
-class="primary"
-onclick="measureQuantum()">
-
-⚛ Measure
-
-</button>
-
-<button
-class="secondary"
-onclick="completeExperiment('quantum')">
-
-🏆 Complete
-
-</button>
-
-`;
-
-}
-
-
-modal.classList.add("show");
-
-}
-
-
-function closeModal(){
-
-document
-.getElementById("modal")
-.classList.remove("show");
-
-}
-
-
-/* =========================================================
-   NEWTON
-========================================================= */
-
-function updateNewton(){
-
-const force=
-Number(
-document.getElementById("force").value
-);
-
-const mass=
-Number(
-document.getElementById("mass").value
-);
-
-document
-.getElementById("forceValue")
-.textContent=force;
-
-document
-.getElementById("massValue")
-.textContent=mass;
-
-const acceleration=
-force/mass;
-
-document
-.getElementById("acceleration")
-.textContent=
-"Acceleration: "+
-acceleration.toFixed(2)+
-" m/s²";
-
-}
-
-
-function launchNewton(){
-
-const result=
-document.getElementById(
-"newtonResult"
-);
-
-const force=
-Number(
-document.getElementById("force").value
-);
-
-const mass=
-Number(
-document.getElementById("mass").value
-);
-
-const acceleration=
-force/mass;
-
-result.innerHTML=
-"🚀 Vehicle launched! Acceleration = "+
-acceleration.toFixed(2)+
-" m/s²";
-
-}
+window.addEventListener("resize",resizeAll);
 
 
 /* =========================================================
    GRAVITY
 ========================================================= */
 
-function jump(gravity,planet){
+const gc=document.getElementById("gCanvas");
+const gctx=gc.getContext("2d");
 
-const height=
-(10*10)/(2*gravity);
+let gy=55,gvy=0,gtime=0,gRunning=false,graf;
 
-document
-.getElementById("jumpResult")
-.textContent=
-planet+
-" → ideal jump height: "+
-height.toFixed(2)+
-" m";
+planet.oninput=()=>{
+ planetLabel.textContent=
+ planet.selectedOptions[0].text.split(" ")[0].toUpperCase();
+ document.getElementById("gAccel").textContent=
+ Number(planet.value).toFixed(2)+" m/s²";
+};
 
+gMass.oninput=()=>{
+ massLabel.textContent=gMass.value+" kg";
+};
+
+function dropObject(){
+ gRunning=true;
+ gy=55;gvy=0;gtime=0;
+ gravityLoop();
+ achievement("firstDrop","FIRST GRAVITY EXPERIMENT");
 }
+
+function resetGravity(){
+ gRunning=false;
+ cancelAnimationFrame(graf);
+ gy=55;gvy=0;gtime=0;
+ gTime.textContent="0.00 s";
+ gVelocity.textContent="0 m/s";
+ gImpact.textContent="—";
+ drawGravity();
+}
+
+function gravityLoop(){
+ if(!gRunning)return;
+
+ const g=Number(planet.value);
+ const dt=.016;
+
+ gtime+=dt;
+ gvy+=g*dt;
+ gy+=gvy*2;
+
+ if(gy>gc.height-55){
+  gy=gc.height-55;
+  gRunning=false;
+  gImpact.textContent=Math.abs(gvy).toFixed(1)+" m/s";
+
+  if(Math.abs(gvy)>25)
+   achievement("hardImpact","HARD IMPACT");
+ }
+
+ gTime.textContent=gtime.toFixed(2)+" s";
+ gVelocity.textContent=Math.abs(gvy).toFixed(1)+" m/s";
+
+ drawGravity();
+ graf=requestAnimationFrame(gravityLoop);
+}
+
+function drawGravity(){
+ gctx.clearRect(0,0,gc.width,gc.height);
+
+ gctx.strokeStyle="#102039";
+ for(let x=0;x<gc.width;x+=40){
+  gctx.beginPath();gctx.moveTo(x,0);gctx.lineTo(x,gc.height);gctx.stroke();
+ }
+
+ for(let y=0;y<gc.height;y+=40){
+  gctx.beginPath();gctx.moveTo(0,y);gctx.lineTo(gc.width,y);gctx.stroke();
+ }
+
+ gctx.strokeStyle="#314b68";
+ gctx.beginPath();
+ gctx.moveTo(0,gc.height-30);
+ gctx.lineTo(gc.width,gc.height-30);
+ gctx.stroke();
+
+ gctx.shadowBlur=25;
+ gctx.shadowColor="#4de8ff";
+ gctx.fillStyle="#4de8ff";
+ gctx.beginPath();
+ gctx.arc(gc.width/2,gy,25,0,Math.PI*2);
+ gctx.fill();
+ gctx.shadowBlur=0;
+
+ gctx.fillStyle="#8296b0";
+ gctx.font="12px monospace";
+ gctx.fillText("OBJECT",gc.width/2-25,gy-35);
+}
+
+drawGravity();
 
 
 /* =========================================================
-   CIRCUIT
+   PROJECTILE
 ========================================================= */
+
+const pc=document.getElementById("pCanvas");
+const pctx=pc.getContext("2d");
+
+let pX=60,pY=0,pVX=0,pVY=0,pT=0,pRun=false,praf,target;
+
+pAngle.oninput=()=>angleLabel.textContent=pAngle.value+"°";
+pPower.oninput=()=>powerLabel.textContent=pPower.value;
+pGravity.oninput=()=>pGravityLabel.textContent=pGravity.value;
+
+function resetProjectile(){
+ pRun=false;
+ cancelAnimationFrame(praf);
+ pX=60;pY=pc.height-45;
+ pT=0;
+ pResult.textContent="READY";
+ pDistance.textContent="0 m";
+ pHeight.textContent="0 m";
+ pTime.textContent="0 s";
+ drawProjectile();
+}
+
+function fire(){
+ resetProjectile();
+
+ let a=Number(pAngle.value)*Math.PI/180;
+ let speed=Number(pPower.value);
+
+ pVX=Math.cos(a)*speed;
+ pVY=-Math.sin(a)*speed;
+ pRun=true;
+
+ projectileLoop();
+ achievement("firstShot","FIRST CANNON SHOT");
+}
+
+function projectileLoop(){
+ if(!pRun)return;
+
+ const dt=.025;
+ pT+=dt;
+ pVX*=.999;
+ pVY+=Number(pGravity.value)*dt;
+
+ pX+=pVX*dt*2;
+ pY+=pVY*dt*2;
+
+ let targetX=pc.width*.78;
+
+ if(pY>=pc.height-45||pX>pc.width){
+  pRun=false;
+
+  const hit=Math.abs(pX-targetX)<38;
+
+  pResult.textContent=hit?"🎯 TARGET HIT":"MISS";
+
+  if(hit)
+   achievement("target","TARGET DESTROYED");
+ }
+
+ pDistance.textContent=Math.max(0,(pX-60)/5).toFixed(1)+" m";
+ pHeight.textContent=Math.max(0,(pc.height-45-pY)/5).toFixed(1)+" m";
+ pTime.textContent=pT.toFixed(2)+" s";
+
+ drawProjectile();
+ praf=requestAnimationFrame(projectileLoop);
+}
+
+function drawProjectile(){
+ pctx.clearRect(0,0,pc.width,pc.height);
+
+ pctx.strokeStyle="#102039";
+ for(let y=0;y<pc.height;y+=40){
+  pctx.beginPath();pctx.moveTo(0,y);pctx.lineTo(pc.width,y);pctx.stroke();
+ }
+
+ target=pc.width*.78;
+
+ pctx.fillStyle="#ff496d";
+ pctx.fillRect(target-22,pc.height-70,44,40);
+
+ pctx.fillStyle="#fff";
+ pctx.font="11px monospace";
+ pctx.fillText("TARGET",target-25,pc.height-78);
+
+ pctx.fillStyle="#ffc94d";
+ pctx.shadowBlur=20;
+ pctx.shadowColor="#ffc94d";
+ pctx.beginPath();
+ pctx.arc(pX,pY,13,0,Math.PI*2);
+ pctx.fill();
+ pctx.shadowBlur=0;
+
+ pctx.strokeStyle="#ffbf45";
+ pctx.setLineDash([5,7]);
+ pctx.beginPath();
+ pctx.moveTo(60,pc.height-45);
+ pctx.lineTo(
+  60+Math.cos(Number(pAngle.value)*Math.PI/180)*120,
+  pc.height-45-Math.sin(Number(pAngle.value)*Math.PI/180)*120
+ );
+ pctx.stroke();
+ pctx.setLineDash([]);
+}
+
+resetProjectile();
+
+
+/* =========================================================
+   NEWTON
+========================================================= */
+
+const nc=document.getElementById("nCanvas");
+const nctx=nc.getContext("2d");
+
+let nx=70,nv=0,nd=0,nRunning=false,nraf;
+
+forceSlider.oninput=()=>forceLabel.textContent=forceSlider.value+" N";
+nMassSlider.oninput=()=>nMassLabel.textContent=nMassSlider.value+" kg";
+frictionSlider.oninput=()=>frictionLabel.textContent=frictionSlider.value+"%";
+
+function pushBlock(){
+ nRunning=true;
+ newtonLoop();
+ achievement("forceTest","FORCE ENGINE ACTIVATED");
+}
+
+function resetNewton(){
+ nRunning=false;
+ cancelAnimationFrame(nraf);
+ nx=70;nv=0;nd=0;
+ nAccel.textContent="0 m/s²";
+ nVelocity.textContent="0 m/s";
+ nDistance.textContent="0 m";
+ drawNewton();
+}
+
+function newtonLoop(){
+ if(!nRunning)return;
+
+ const F=Number(forceSlider.value);
+ const m=Number(nMassSlider.value);
+ const friction=Number(frictionSlider.value)/100;
+
+ const acceleration=(F/m)*(1-friction);
+
+ nv+=acceleration*.016;
+ nx+=nv*.7;
+ nd+=nv*.016;
+
+ if(nx>nc.width-100){
+  nx=70;
+  nv=0;
+ }
+
+ nForce.textContent=F+" N";
+ nAccel.textContent=acceleration.toFixed(2)+" m/s²";
+ nVelocity.textContent=nv.toFixed(1)+" m/s";
+ nDistance.textContent=nd.toFixed(1)+" m";
+
+ drawNewton();
+ nraf=requestAnimationFrame(newtonLoop);
+}
+
+function drawNewton(){
+ nctx.clearRect(0,0,nc.width,nc.height);
+
+ nctx.strokeStyle="#263e59";
+ nctx.lineWidth=2;
+ nctx.beginPath();
+ nctx.moveTo(0,nc.height-80);
+ nctx.lineTo(nc.width,nc.height-80);
+ nctx.stroke();
+
+ nctx.fillStyle="#45ddff";
+ nctx.shadowBlur=20;
+ nctx.shadowColor="#45ddff";
+ nctx.fillRect(nx,nc.height-130,75,50);
+ nctx.shadowBlur=0;
+
+ nctx.fillStyle="#fff";
+ nctx.font="11px monospace";
+ nctx.fillText("MASS",nx+20,nc.height-101);
+
+ const force=Number(forceSlider.value);
+
+ nctx.strokeStyle="#ff5577";
+ nctx.lineWidth=5;
+ nctx.beginPath();
+ nctx.moveTo(nx+78,nc.height-105);
+ nctx.lineTo(nx+78+Math.min(force,120),nc.height-105);
+ nctx.stroke();
+
+ nctx.fillStyle="#ff5577";
+ nctx.fillText("FORCE →",nx+82,nc.height-120);
+}
+
+drawNewton();
+
+
+/* =========================================================
+   COLLISION
+========================================================= */
+
+const cc=document.getElementById("cCanvas");
+const cctx=cc.getContext("2d");
+
+let cA=70,cB=500,cVA=70,cVB=-30,cRun=false,craf2;
+
+caMass.oninput=()=>caLabel.textContent=caMass.value+" kg";
+cbMass.oninput=()=>cbLabel.textContent=cbMass.value+" kg";
+cSpeed.oninput=()=>csLabel.textContent=cSpeed.value;
+
+function startCollision(){
+ cA=70;
+ cB=cc.width-70;
+ cVA=Number(cSpeed.value);
+ cVB=-30;
+ cRun=true;
+ collisionLoop();
+ achievement("collision","COLLISION ENGINE");
+}
+
+function resetCollision(){
+ cRun=false;
+ cancelAnimationFrame(craf2);
+ cA=70;cB=cc.width-70;
+ cVA=70;cVB=-30;
+ collisionStatus.textContent="READY";
+ drawCollision();
+}
+
+function collisionLoop(){
+ if(!cRun)return;
+
+ cA+=cVA*.35;
+ cB+=cVB*.35;
+
+ if(Math.abs(cA-cB)<48){
+
+  const m1=Number(caMass.value);
+  const m2=Number(cbMass.value);
+
+  const oldA=cVA;
+  const oldB=cVB;
+
+  cVA=((m1-m2)/(m1+m2))*oldA+
+      ((2*m2)/(m1+m2))*oldB;
+
+  cVB=((2*m1)/(m1+m2))*oldA+
+      ((m2-m1)/(m1+m2))*oldB;
+
+  collisionStatus.textContent="💥 IMPACT";
+  achievement("momentum","MOMENTUM TRANSFER");
+ }
+
+ const momentum=
+ Number(caMass.value)*cVA+
+ Number(cbMass.value)*cVB;
+
+ momentumEl(momentum);
+
+ caVel.textContent=cVA.toFixed(1);
+ cbVel.textContent=cVB.toFixed(1);
+
+ if(cA>cc.width+100||cB<-100)cRun=false;
+
+ drawCollision();
+ craf2=requestAnimationFrame(collisionLoop);
+}
+
+function momentumEl(v){
+ document.getElementById("momentum").textContent=v.toFixed(1)+" kg·m/s";
+}
+
+function drawCollision(){
+ cctx.clearRect(0,0,cc.width,cc.height);
+
+ cctx.strokeStyle="#102039";
+ for(let y=0;y<cc.height;y+=40){
+  cctx.beginPath();cctx.moveTo(0,y);cctx.lineTo(cc.width,y);cctx.stroke();
+ }
+
+ cctx.fillStyle="#4de8ff";
+ cctx.shadowBlur=25;
+ cctx.shadowColor="#4de8ff";
+ cctx.beginPath();cctx.arc(cA,cc.height/2,28,0,Math.PI*2);cctx.fill();
+
+ cctx.fillStyle="#ff5577";
+ cctx.shadowColor="#ff5577";
+ cctx.beginPath();cctx.arc(cB,cc.height/2,28,0,Math.PI*2);cctx.fill();
+
+ cctx.shadowBlur=0;
+ cctx.fillStyle="#fff";
+ cctx.font="bold 13px Arial";
+ cctx.fillText("A",cA-4,cc.height/2+5);
+ cctx.fillText("B",cB-4,cc.height/2+5);
+}
+
+drawCollision();
+
+
+/* =========================================================
+   ELECTRICITY
+========================================================= */
+
+let circuitOn=false;
+
+voltage.oninput=()=>{
+ voltageLabel.textContent=voltage.value+" V";
+ updateCircuit();
+};
+
+resistance.oninput=()=>{
+ resistanceLabel.textContent=resistance.value+" Ω";
+ updateCircuit();
+};
+
+function toggleCircuit(){
+ circuitOn=!circuitOn;
+ updateCircuit();
+
+ if(circuitOn)
+  achievement("electricity","CIRCUIT ACTIVATED");
+}
 
 function updateCircuit(){
+ const V=Number(voltage.value);
+ const R=Number(resistance.value);
+ const I=circuitOn?V/R:0;
+ const P=V*I;
 
-const voltage=
-Number(
-document.getElementById("voltage").value
-);
+ current.textContent=I.toFixed(2)+" A";
+ electricalPower.textContent=P.toFixed(1)+" W";
+ circuitStatus.textContent=circuitOn?"CLOSED":"OPEN";
 
-const resistance=
-Number(
-document.getElementById("resistance").value
-);
+ document.querySelectorAll(".cWire").forEach(w=>{
+  w.classList.toggle("on",circuitOn);
+ });
 
-document
-.getElementById("voltageValue")
-.textContent=voltage;
+ document.querySelectorAll(".electron").forEach(e=>{
+  e.style.opacity=circuitOn?"1":"0";
+ });
 
-document
-.getElementById("resistanceValue")
-.textContent=resistance;
-
-document
-.getElementById("currentResult")
-.textContent=
-"Current: "+
-(voltage/resistance).toFixed(2)+
-" A";
-
-}
-
-
-/* =========================================================
-   WAVES
-========================================================= */
-
-function drawWave(){
-
-const canvas=
-document.getElementById(
-"waveCanvas"
-);
-
-if(!canvas)return;
-
-const ctx=
-canvas.getContext("2d");
-
-const frequency=
-Number(
-document.getElementById("frequency").value
-);
-
-const amplitude=
-Number(
-document.getElementById("amplitude").value
-);
-
-ctx.clearRect(
-0,
-0,
-canvas.width,
-canvas.height
-);
-
-ctx.strokeStyle="#55e7ff";
-
-ctx.lineWidth=3;
-
-ctx.beginPath();
-
-for(
-let x=0;
-x<canvas.width;
-x++
-){
-
-const y=
-canvas.height/2+
-Math.sin(
-x/canvas.width*
-Math.PI*2*
-frequency
-)*
-amplitude;
-
-if(x===0)
-ctx.moveTo(x,y);
-else
-ctx.lineTo(x,y);
-
-}
-
-ctx.stroke();
-
-}
-
-
-/* =========================================================
-   ENERGY
-========================================================= */
-
-function runEnergy(){
-
-const cart=
-document.getElementById("cart");
-
-if(!cart)return;
-
-if(cart.dataset.running==="true")
-return;
-
-cart.dataset.running="true";
-
-let x=30;
-
-const timer=
-setInterval(()=>{
-
-x+=4;
-
-cart.style.left=
-x+"px";
-
-cart.style.top=
-(
-150-
-Math.sin(x/70)*90
-)+"px";
-
-if(
-x>cart.parentElement.clientWidth-60
-){
-
-clearInterval(timer);
-
-cart.dataset.running="false";
-
-}
-
-},25);
-
-}
-
-
-/* =========================================================
-   ORBIT
-========================================================= */
-
-function updateOrbit(){
-
-const speed=
-Number(
-document.getElementById(
-"orbitalSpeed"
-).value
-);
-
-let text;
-
-if(speed<35)
-text="Too slow → object falls inward";
-
-else if(speed<75)
-text="Stable-ish orbit 🪐";
-
-else
-text="Very fast → possible escape 🚀";
-
-document
-.getElementById("orbitResult")
-.textContent=text;
-
+ bulb.style.filter=circuitOn?
+ "drop-shadow(0 0 35px #ffe14d)":"grayscale(1)";
 }
 
 
@@ -2821,227 +1491,547 @@ document
    MAGNET
 ========================================================= */
 
-function runMagnet(){
+const mc=document.getElementById("mCanvas");
+const mctx=mc.getContext("2d");
 
-const particle=
-document.getElementById(
-"particle"
-);
+let mouseX=-100,mouseY=-100;
 
-if(!particle)return;
-
-if(
-particle.dataset.running==="true"
-)
-return;
-
-particle.dataset.running="true";
-
-let t=0;
-
-const timer=
-setInterval(()=>{
-
-t+=0.08;
-
-particle.style.left=
-(
-30+t*70
-)+"px";
-
-particle.style.top=
-(
-140+
-Math.sin(t*3)*80
-)+"px";
-
-if(t>7){
-
-clearInterval(timer);
-
-particle.dataset.running="false";
-
-}
-
-},25);
-
-}
-
-
-/* =========================================================
-   LASER
-========================================================= */
-
-function drawLaser(){
-
-const canvas=
-document.getElementById(
-"laserCanvas"
-);
-
-if(!canvas)return;
-
-const ctx=
-canvas.getContext("2d");
-
-const angle=
-Number(
-document.getElementById(
-"laserAngle"
-).value
-)*
-Math.PI/180;
-
-ctx.clearRect(
-0,
-0,
-canvas.width,
-canvas.height
-);
-
-ctx.strokeStyle="#ffffff33";
-
-ctx.lineWidth=2;
-
-ctx.beginPath();
-
-ctx.moveTo(
-350,
-60
-);
-
-ctx.lineTo(
-350,
-240
-);
-
-ctx.stroke();
-
-
-ctx.strokeStyle="#55e7ff";
-
-ctx.lineWidth=4;
-
-ctx.beginPath();
-
-ctx.moveTo(
-20,
-250
-);
-
-ctx.lineTo(
-350,
-150
-);
-
-ctx.stroke();
-
-
-ctx.strokeStyle="#ff5577";
-
-ctx.beginPath();
-
-ctx.moveTo(
-350,
-150
-);
-
-ctx.lineTo(
-680,
-150-
-Math.tan(angle)*180
-);
-
-ctx.stroke();
-
-}
-
-
-/* =========================================================
-   QUANTUM
-========================================================= */
-
-function measureQuantum(){
-
-const result=
-Math.random()<.5;
-
-document
-.getElementById(
-"quantumResult"
-)
-.textContent=
-result
-?
-"⚛️"
-:
-"🌌";
-
-document
-.getElementById(
-"quantumText"
-)
-.textContent=
-result
-?
-"State A detected"
-:
-"State B detected";
-
-}
-
-
-/* =========================================================
-   MODAL CONTROLS
-========================================================= */
-
-document
-.getElementById("modal")
-.addEventListener(
-"click",
-function(event){
-
-if(
-event.target===
-document.getElementById("modal")
-){
-
-closeModal();
-
-}
-
+mc.addEventListener("mousemove",e=>{
+ const r=mc.getBoundingClientRect();
+ mouseX=e.clientX-r.left;
+ mouseY=e.clientY-r.top;
 });
 
+magStrength.oninput=()=>{
+ magLabel.textContent=magStrength.value;
+ magTelemetry.textContent=magStrength.value;
+ fieldLines.textContent=Number(magStrength.value)*3;
+};
 
-document.addEventListener(
-"keydown",
-function(event){
+function scanMagnet(){
+ magStatus.textContent="SCANNING";
+ achievement("magnetic","MAGNETIC FIELD SCANNED");
+ setTimeout(()=>magStatus.textContent="COMPLETE",1000);
+}
 
-if(event.key==="Escape")
-closeModal();
+function resetMagnet(){
+ magStrength.value=5;
+ magLabel.textContent=5;
+ magTelemetry.textContent=5;
+ fieldLines.textContent=15;
+ magStatus.textContent="READY";
+}
 
-});
+function drawMagnet(){
+ mctx.clearRect(0,0,mc.width,mc.height);
+
+ const cx=mc.width/2;
+ const cy=mc.height/2;
+ const strength=Number(magStrength.value);
+
+ for(let r=45;r<Math.min(mc.width,mc.height)*.7;r+=25){
+
+  mctx.strokeStyle=
+   "rgba(77,232,255,"+
+   Math.max(.03,.5-r/(Math.min(mc.width,mc.height)*1.5))+
+   ")";
+
+  mctx.lineWidth=1;
+
+  mctx.beginPath();
+  mctx.ellipse(cx,cy,r,r*.42,0,0,Math.PI*2);
+  mctx.stroke();
+ }
+
+ mctx.fillStyle="#ff5577";
+ mctx.fillRect(cx-75,cy-23,75,46);
+
+ mctx.fillStyle="#4de8ff";
+ mctx.fillRect(cx,cy-23,75,46);
+
+ mctx.fillStyle="#fff";
+ mctx.font="bold 20px Arial";
+ mctx.fillText("N",cx-48,cy+7);
+ mctx.fillText("S",cx+29,cy+7);
+
+ if(mouseX>-50){
+  const dx=mouseX-cx;
+  const dy=mouseY-cy;
+  const dist=Math.sqrt(dx*dx+dy*dy);
+
+  mctx.strokeStyle="#ffd34d";
+  mctx.beginPath();
+  mctx.moveTo(mouseX,mouseY);
+  mctx.lineTo(
+   mouseX-dx/(dist||1)*Math.min(70,dist),
+   mouseY-dy/(dist||1)*Math.min(70,dist)
+  );
+  mctx.stroke();
+
+  mctx.fillStyle="#ffd34d";
+  mctx.font="11px monospace";
+  mctx.fillText(
+   "FIELD RESPONSE: "+(strength*100/(dist+20)).toFixed(2),
+   mouseX+10,mouseY-10
+  );
+ }
+
+ requestAnimationFrame(drawMagnet);
+}
+
+drawMagnet();
 
 
 /* =========================================================
-   INITIAL LOAD
+   WAVES
 ========================================================= */
 
-updateUI();
+const wc=document.getElementById("wCanvas");
+const wctx=wc.getContext("2d");
+
+let waveT=0;
+
+frequency.oninput=()=>{
+ freqLabel.textContent=frequency.value+" Hz";
+ wFreq.textContent=frequency.value+" Hz";
+ wLength.textContent=(100/Number(frequency.value)).toFixed(1);
+};
+
+amplitude.oninput=()=>{
+ ampLabel.textContent=amplitude.value;
+ wAmp.textContent=amplitude.value;
+};
+
+waveSpeed.oninput=()=>{
+ waveSpeedLabel.textContent=waveSpeed.value;
+};
+
+function wavePulse(){
+ achievement("wave","WAVE PULSE");
+}
+
+function drawWave(){
+ wctx.clearRect(0,0,wc.width,wc.height);
+
+ const f=Number(frequency.value);
+ const a=Number(amplitude.value);
+ const speed=Number(waveSpeed.value);
+
+ wctx.strokeStyle="#102039";
+
+ for(let y=0;y<wc.height;y+=40){
+  wctx.beginPath();
+  wctx.moveTo(0,y);
+  wctx.lineTo(wc.width,y);
+  wctx.stroke();
+ }
+
+ wctx.strokeStyle="#4de8ff";
+ wctx.lineWidth=3;
+ wctx.beginPath();
+
+ for(let x=0;x<wc.width;x++){
+  const y=
+   wc.height/2+
+   Math.sin(x*.025*f-waveT*speed)*a/2;
+
+  if(x===0)wctx.moveTo(x,y);
+  else wctx.lineTo(x,y);
+ }
+
+ wctx.stroke();
+
+ waveT+=.02;
+
+ requestAnimationFrame(drawWave);
+}
+
+drawWave();
 
 
-/* AUTO SAVE */
+/* =========================================================
+   ORBIT
+========================================================= */
 
-window.addEventListener(
-"beforeunload",
-function(){
+const oc=document.getElementById("oCanvas");
+const octx=oc.getContext("2d");
 
-localStorage.setItem(
-SAVE_KEY,
-JSON.stringify(state)
-);
+let osx=0,osy=0,ovx=0,ovy=0,orbitRun=false,oraf;
 
-});
+orbitSpeed.oninput=()=>{
+ orbitSpeedLabel.textContent=orbitSpeed.value;
+};
+
+function launchOrbit(){
+ const cx=oc.width/2;
+ const cy=oc.height/2;
+
+ osx=cx+150;
+ osy=cy;
+
+ ovx=0;
+ ovy=-Number(orbitSpeed.value)/18;
+
+ orbitRun=true;
+
+ orbitLoop();
+ achievement("launch","ORBITAL MISSION LAUNCHED");
+}
+
+function resetOrbit(){
+ orbitRun=false;
+ cancelAnimationFrame(oraf);
+ orbitStatus.textContent="READY";
+ drawOrbit();
+}
+
+function orbitLoop(){
+ if(!orbitRun)return;
+
+ const cx=oc.width/2;
+ const cy=oc.height/2;
+
+ const dx=cx-osx;
+ const dy=cy-osy;
+
+ const d=Math.sqrt(dx*dx+dy*dy);
+
+ const G=1000/(d*d);
+
+ ovx+=dx/d*G;
+ ovy+=dy/d*G;
+
+ osx+=ovx;
+ osy+=ovy;
+
+ orbitAltitude.textContent=Math.round(d)+" km";
+ orbitVelocity.textContent=Math.sqrt(ovx*ovx+ovy*ovy).toFixed(2);
+
+ if(d<45){
+  orbitRun=false;
+  orbitStatus.textContent="💥 CRASH";
+ }
+
+ if(d>Math.max(oc.width,oc.height)){
+  orbitRun=false;
+  orbitStatus.textContent="🚀 ESCAPED";
+ }
+
+ if(d>100&&d<220&&Math.abs(ovx)<2){
+  achievement("orbit","ORBIT ACHIEVED");
+ }
+
+ drawOrbit();
+ oraf=requestAnimationFrame(orbitLoop);
+}
+
+function drawOrbit(){
+ octx.clearRect(0,0,oc.width,oc.height);
+
+ const cx=oc.width/2;
+ const cy=oc.height/2;
+
+ octx.strokeStyle="#162d4a";
+ octx.setLineDash([4,7]);
+ octx.beginPath();
+ octx.arc(cx,cy,150,0,Math.PI*2);
+ octx.stroke();
+ octx.setLineDash([]);
+
+ octx.shadowBlur=35;
+ octx.shadowColor="#45bfff";
+ octx.fillStyle="#45bfff";
+ octx.beginPath();
+ octx.arc(cx,cy,43,0,Math.PI*2);
+ octx.fill();
+ octx.shadowBlur=0;
+
+ octx.fillStyle="#fff";
+ octx.font="11px monospace";
+ octx.fillText("PLANET",cx-23,cy+4);
+
+ if(orbitRun){
+  octx.fillStyle="#ffd34d";
+  octx.shadowBlur=20;
+  octx.shadowColor="#ffd34d";
+  octx.beginPath();
+  octx.arc(osx,osy,9,0,Math.PI*2);
+  octx.fill();
+  octx.shadowBlur=0;
+ }
+}
+
+drawOrbit();
+
+
+/* =========================================================
+   HEAT
+========================================================= */
+
+const hc=document.getElementById("hCanvas");
+const hctx=hc.getContext("2d");
+
+let particles=[];
+
+for(let i=0;i<130;i++){
+ particles.push({
+  x:Math.random(),
+  y:Math.random(),
+  vx:Math.random()-.5,
+  vy:Math.random()-.5
+ });
+}
+
+temperature.oninput=()=>{
+ tempLabel.textContent=temperature.value+"°C";
+ heatTemp.textContent=temperature.value+"°C";
+ particleSpeed.textContent=temperature.value+"%";
+
+ let t=Number(temperature.value);
+
+ heatState.textContent=
+  t<20?"COLD":
+  t<60?"WARM":
+  t<85?"HOT":"🔥 EXTREME";
+};
+
+function heatBurst(){
+ temperature.value=Math.min(100,Number(temperature.value)+20);
+ temperature.dispatchEvent(new Event("input"));
+ achievement("heat","THERMAL BURST");
+}
+
+function coolBurst(){
+ temperature.value=Math.max(0,Number(temperature.value)-20);
+ temperature.dispatchEvent(new Event("input"));
+}
+
+function drawHeat(){
+ hctx.clearRect(0,0,hc.width,hc.height);
+
+ const T=Number(temperature.value);
+ const speed=.15+T/100;
+
+ particles.forEach(p=>{
+  p.x+=p.vx*speed;
+  p.y+=p.vy*speed;
+
+  if(p.x<0||p.x>1)p.vx*=-1;
+  if(p.y<0||p.y>1)p.vy*=-1;
+
+  const r=2+T/35;
+
+  hctx.fillStyle=T>75?"#ff5577":T>40?"#ffd34d":"#4de8ff";
+
+  hctx.beginPath();
+  hctx.arc(p.x*hc.width,p.y*hc.height,r,0,Math.PI*2);
+  hctx.fill();
+ });
+
+ requestAnimationFrame(drawHeat);
+}
+
+drawHeat();
+
+
+/* =========================================================
+   BLACK HOLE
+========================================================= */
+
+const bc=document.getElementById("bhCanvas");
+const bctx=bc.getContext("2d");
+
+let bx=0,by=0,bvx=0,bvy=0,bRun=false,braf;
+
+bhSpeed.oninput=()=>bhSpeedLabel.textContent=bhSpeed.value;
+bhGravity.oninput=()=>bhGravityLabel.textContent=bhGravity.value;
+
+function launchBlackHole(){
+ bx=70;
+ by=bc.height/2;
+ bvx=Number(bhSpeed.value)/12;
+ bvy=-Number(bhSpeed.value)/40;
+ bRun=true;
+
+ blackHoleLoop();
+
+ achievement("blackhole","ENTERED EXTREME GRAVITY");
+}
+
+function resetBlackHole(){
+ bRun=false;
+ cancelAnimationFrame(braf);
+ bhStatus.textContent="READY";
+ drawBlackHole();
+}
+
+function blackHoleLoop(){
+ if(!bRun)return;
+
+ const cx=bc.width/2;
+ const cy=bc.height/2;
+
+ const dx=cx-bx;
+ const dy=cy-by;
+
+ const d=Math.sqrt(dx*dx+dy*dy);
+
+ const force=Number(bhGravity.value)*120/(d*d);
+
+ bvx+=dx/(d||1)*force;
+ bvy+=dy/(d||1)*force;
+
+ bx+=bvx;
+ by+=bvy;
+
+ bhDistance.textContent=Math.round(d)+" units";
+ bhVelocity.textContent=Math.sqrt(bvx*bvx+bvy*bvy).toFixed(2);
+
+ if(d<55){
+  bRun=false;
+  bhStatus.textContent="🕳️ EVENT HORIZON";
+  achievement("horizon","EVENT HORIZON REACHED");
+ }
+
+ if(bx>bc.width+100||bx< -100||by>bc.height+100||by<-100){
+  bRun=false;
+  bhStatus.textContent="ESCAPED";
+ }
+
+ drawBlackHole();
+ braf=requestAnimationFrame(blackHoleLoop);
+}
+
+function drawBlackHole(){
+ bctx.clearRect(0,0,bc.width,bc.height);
+
+ const cx=bc.width/2;
+ const cy=bc.height/2;
+
+ for(let i=0;i<7;i++){
+  bctx.strokeStyle="rgba(145,108,255,"+(0.12-i*.01)+")";
+  bctx.lineWidth=2;
+
+  bctx.beginPath();
+  bctx.ellipse(
+   cx,cy,
+   80+i*42,
+   28+i*13,
+   0,0,Math.PI*2
+  );
+  bctx.stroke();
+ }
+
+ bctx.shadowBlur=60;
+ bctx.shadowColor="#8b54ff";
+
+ bctx.fillStyle="#000";
+ bctx.beginPath();
+ bctx.arc(cx,cy,52,0,Math.PI*2);
+ bctx.fill();
+
+ bctx.shadowBlur=0;
+
+ bctx.fillStyle="#fff";
+ bctx.font="10px monospace";
+ bctx.fillText("EVENT HORIZON",cx-45,cy+75);
+
+ if(bRun){
+  bctx.fillStyle="#ffd34d";
+  bctx.shadowBlur=20;
+  bctx.shadowColor="#ffd34d";
+  bctx.beginPath();
+  bctx.arc(bx,by,8,0,Math.PI*2);
+  bctx.fill();
+  bctx.shadowBlur=0;
+ }
+}
+
+drawBlackHole();
+
+
+/* =========================================================
+   BOOT PARTICLES
+========================================================= */
+
+const bootCanvas=document.getElementById("bootCanvas");
+const btx=bootCanvas.getContext("2d");
+
+let bootParticles=[];
+
+function resizeBoot(){
+ bootCanvas.width=innerWidth;
+ bootCanvas.height=innerHeight;
+}
+
+resizeBoot();
+window.addEventListener("resize",resizeBoot);
+
+for(let i=0;i<100;i++){
+ bootParticles.push({
+  x:Math.random(),
+  y:Math.random(),
+  s:Math.random()*1.5+.2,
+  a:Math.random()
+ });
+}
+
+function bootAnimation(){
+ btx.clearRect(0,0,bootCanvas.width,bootCanvas.height);
+
+ bootParticles.forEach(p=>{
+  p.y-=.0004*p.s;
+
+  if(p.y<0)p.y=1;
+
+  btx.fillStyle="rgba(77,232,255,"+p.a+")";
+  btx.fillRect(
+   p.x*bootCanvas.width,
+   p.y*bootCanvas.height,
+   p.s,
+   p.s
+  );
+ });
+
+ requestAnimationFrame(bootAnimation);
+}
+
+bootAnimation();
+
+
+/* =========================================================
+   BOOT COMPLETION
+========================================================= */
+
+let bootP=0;
+
+const bootTimer=setInterval(()=>{
+ bootP++;
+ document.getElementById("bootPercent").textContent=bootP+"%";
+
+ if(bootP>=100){
+  clearInterval(bootTimer);
+
+  setTimeout(()=>{
+   document.getElementById("boot").style.opacity="0";
+
+   setTimeout(()=>{
+    document.getElementById("boot").style.display="none";
+    document.getElementById("app").style.display="block";
+    resizeAll();
+   },1000);
+
+  },700);
+ }
+},55);
+
+
+/* =========================================================
+   FINAL SAVE
+========================================================= */
+
+window.addEventListener("beforeunload",saveGame);
+setInterval(saveGame,5000);
 
 </script>
 
